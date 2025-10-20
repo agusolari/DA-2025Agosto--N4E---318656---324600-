@@ -45,4 +45,8 @@ public class Propietario {
 
     public Propietario() {}
 
+    public boolean esContraseñaValida(String contrasenaIngresada) {
+        return this.contrasena.equals(contrasenaIngresada);
+    }
+
 }

@@ -6,16 +6,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Propietario {
+public class Propietario extends Usuario {
 
-    @Getter 
-    @Setter
-    private String nombreCompleto;
-    @Getter 
-    private String cedula;  
-    @Getter 
-    @Setter
-    private String contrasena;
     @Getter 
     @Setter
     private List<Vehiculo> vehiculos;
@@ -27,26 +19,23 @@ public class Propietario {
     private List<Bonificacion> bonificaciones;
     @Getter
     @Setter
-    private String estado;
+    private Estado estado;
     @Getter
     @Setter
     private double saldo;
 
-    public Propietario(String nombreCompleto, String contrasena, String cedula, double saldo) {
-        this.nombreCompleto = nombreCompleto;
-        this.cedula = cedula;
-        this.contrasena = contrasena;
+    public Propietario(String cedula, String contrasenia, String nombreCompleto) {
+        super(cedula, contrasenia, nombreCompleto);
+    }
+
+    public Propietario(String nombreCompleto, String contrasenia, String cedula, double saldo) {
+        super(cedula, contrasenia, nombreCompleto);
         this.vehiculos = new ArrayList<Vehiculo>();
         this.notificaciones = new ArrayList<Notificacion>();
         this.bonificaciones = new ArrayList<Bonificacion>();
-        this.estado = "Habilitado";
+        this.estado = new Estado("HABILITADO", "Es el estado por defecto de los propietarios cuando se dan de alta en el\n" + //
+                        "sistema. El propietario tiene todas las funcionalidades habilitadas.");
         this.saldo = saldo;
-    }
-
-    public Propietario() {}
-
-    public boolean esContraseñaValida(String contrasenaIngresada) {
-        return this.contrasena.equals(contrasenaIngresada);
     }
 
 }

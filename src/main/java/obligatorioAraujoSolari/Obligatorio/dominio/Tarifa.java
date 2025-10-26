@@ -1,5 +1,7 @@
 package obligatorioAraujoSolari.Obligatorio.dominio;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +17,9 @@ public class Tarifa {
     private PuestoPeaje puestoPeaje;
     @Getter
     @Setter
-    private CategoriaVehiculo categoriaVehiculo;
-    //Arreglar al UML porque no hay relacion entre categoria y tarifa y en la  letra lo pide. 
+    private List<CategoriaVehiculo> categoriaVehiculo;
 
-    public Tarifa(double monto, Transito transito, PuestoPeaje puestoPeaje, CategoriaVehiculo categoriaVehiculo) {
+    public Tarifa(double monto, Transito transito, PuestoPeaje puestoPeaje, List<CategoriaVehiculo> categoriaVehiculo) {
         this.monto = monto;
         this.transito = transito;
         this.puestoPeaje = puestoPeaje;

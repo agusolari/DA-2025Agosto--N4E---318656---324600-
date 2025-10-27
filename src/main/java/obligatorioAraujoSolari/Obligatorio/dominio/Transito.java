@@ -24,7 +24,6 @@ public class Transito {
     @Setter
     private LocalDateTime fechaHora; //maneja mejor la fecha y hora 
     
-    //constructo 
     public Transito(Vehiculo vehiculo, PuestoPeaje puestoPeaje, Tarifa tarifa, Notificacion notificacion,
             Bonificacion bonificacion) {
         this.vehiculo = vehiculo;
@@ -32,9 +31,28 @@ public class Transito {
         this.tarifa = tarifa;
         this.notificacion = notificacion;
         this.bonificacion = bonificacion;
-        //fechaHora seteara al momento de crear el transito
+        this.fechaHora = LocalDateTime.now();
     }
 
     public Transito() {}
+
+    // Creamos este método acá, porque desde el patrón experto, es la clase que tiene la información necesaria para responder si el tránsito es hoy.
+    public boolean esHoy() {
+        LocalDateTime ahora = LocalDateTime.now();
+        return (this.fechaHora.getDayOfYear() == ahora.getDayOfYear() && this.fechaHora.getYear() == ahora.getYear());
+    }
+
+    public boolean esDiaSemana() {
+        switch (this.fechaHora.getDayOfWeek()) {
+            case MONDAY:
+            case TUESDAY:
+            case WEDNESDAY:
+            case THURSDAY:
+            case FRIDAY:
+                return true;
+            default:
+                return false;
+        }
+    }
 
 }

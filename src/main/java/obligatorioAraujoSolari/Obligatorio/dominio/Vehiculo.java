@@ -1,5 +1,7 @@
 package obligatorioAraujoSolari.Obligatorio.dominio;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,20 +25,30 @@ public class Vehiculo {
     private CategoriaVehiculo categoria;
     @Getter 
     @Setter
-    private Transito transito;
+    private List<Transito> transitos;
 
-    //Revisar que pedir en constructor para creacion de vehiculo.
+        //Revisar que pedir en constructor para creacion de vehiculo.
 
-    public Vehiculo(String matricula, String color, String modelo, Propietario propietario,
-            CategoriaVehiculo categoria, Transito transito) {
+        public Vehiculo(String matricula, String color, String modelo, Propietario propietario,
+                CategoriaVehiculo categoria, List<Transito> transitos) {
         this.matricula = matricula;
         this.color = color;
         this.modelo = modelo;
         this.propietario = propietario;
         this.categoria = categoria;
-        this.transito = transito;
+        this.transitos = transitos;
         }
     
     public Vehiculo() {}
+
+    public int obtenerCantidadTransitosEnPuestoHoy(PuestoPeaje puestoPeaje) {
+        int cantidad = 0;
+        for (Transito transito : transitos) {
+            if (transito.getPuestoPeaje().equals(puestoPeaje) && transito.esHoy()) {
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
 
 }

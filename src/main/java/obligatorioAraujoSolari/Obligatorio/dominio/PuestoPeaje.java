@@ -13,7 +13,7 @@ public class PuestoPeaje {
     private String nombre;
     @Getter
     @Setter
-    private Transito transito;
+    private List<Transito> transitos;
     @Getter
     @Setter
     private String ubicacion;
@@ -26,6 +26,7 @@ public class PuestoPeaje {
 
     public PuestoPeaje(String nombre, String ubicacion, Bonificacion bonificacion) {
         this.nombre = nombre;
+        this.transitos = new ArrayList<Transito>();
         this.ubicacion = ubicacion;
         this.tarifas = new ArrayList<Tarifa>();
         this.bonificacion = bonificacion;

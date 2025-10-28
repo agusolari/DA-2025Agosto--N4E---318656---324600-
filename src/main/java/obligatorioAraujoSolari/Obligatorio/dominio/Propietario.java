@@ -23,6 +23,9 @@ public class Propietario extends Usuario {
     @Getter
     @Setter
     private double saldo;
+    @Getter
+    @Setter
+    private double saldoMinimoAlerta;
 
     public Propietario(String cedula, String contrasenia, String nombreCompleto) {
         super(cedula, contrasenia, nombreCompleto);
@@ -36,6 +39,7 @@ public class Propietario extends Usuario {
         this.estado = new Estado("HABILITADO", "Es el estado por defecto de los propietarios cuando se dan de alta en el\n" + //
                         "sistema. El propietario tiene todas las funcionalidades habilitadas.");
         this.saldo = saldo;
+        this.saldoMinimoAlerta = 500;
     }
 
 }

@@ -48,7 +48,4 @@ public class FachadaServicio {
     public boolean existeUsuario(String cedula) {
         return existePropietario(cedula) || existeAdministrador(cedula);
     }
-
-    
-
 }

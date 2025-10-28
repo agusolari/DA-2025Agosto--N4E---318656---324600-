@@ -22,7 +22,7 @@ public class Transito {
     private Bonificacion bonificacion;
     @Getter
     @Setter
-    private LocalDateTime fechaHora; //maneja mejor la fecha y hora 
+    private LocalDateTime fechaHora; 
     
     public Transito(Vehiculo vehiculo, PuestoPeaje puestoPeaje, Tarifa tarifa, Notificacion notificacion,
             Bonificacion bonificacion) {
@@ -55,4 +55,12 @@ public class Transito {
         }
     }
 
+    public double calcularTarifaFinal() {
+        double costoBase = this.tarifa.getMonto();
+        double descuento = 0.0;
+        if (this.bonificacion != null) {
+            descuento = this.bonificacion.calcularDescuento();
+        }
+        return costoBase - (costoBase * descuento);
+    }
 }

@@ -31,5 +31,4 @@ public abstract class Bonificacion {
     public Bonificacion() {}
 
     protected abstract double calcularDescuento();
-
 }

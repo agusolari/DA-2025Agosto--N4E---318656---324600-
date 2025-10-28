@@ -20,4 +20,5 @@ public abstract class Usuario {
     public boolean esContraseniaValida(String contrasenia) {
         return this.contrasenia.equals(contrasenia);
     }
+    
 }

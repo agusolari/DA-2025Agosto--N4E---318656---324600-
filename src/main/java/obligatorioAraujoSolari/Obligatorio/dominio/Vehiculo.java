@@ -1,5 +1,6 @@
 package obligatorioAraujoSolari.Obligatorio.dominio;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -30,13 +31,13 @@ public class Vehiculo {
         //Revisar que pedir en constructor para creacion de vehiculo.
 
         public Vehiculo(String matricula, String color, String modelo, Propietario propietario,
-                CategoriaVehiculo categoria, List<Transito> transitos) {
+                CategoriaVehiculo categoria) {
         this.matricula = matricula;
         this.color = color;
         this.modelo = modelo;
         this.propietario = propietario;
         this.categoria = categoria;
-        this.transitos = transitos;
+        this.transitos = new ArrayList<>();
         }
     
     public Vehiculo() {}

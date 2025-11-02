@@ -20,17 +20,14 @@ public class PuestoPeaje {
     @Getter
     @Setter
     private List<Tarifa> tarifas;
-    @Getter
-    @Setter
-    private Bonificacion bonificacion;
 
-    public PuestoPeaje(String nombre, String ubicacion, Bonificacion bonificacion) {
+    public PuestoPeaje(String nombre, String ubicacion) {
         this.nombre = nombre;
         this.transitos = new ArrayList<Transito>();
         this.ubicacion = ubicacion;
         this.tarifas = new ArrayList<Tarifa>();
-        this.bonificacion = bonificacion;
     }
 
     public PuestoPeaje() {}
+
 }

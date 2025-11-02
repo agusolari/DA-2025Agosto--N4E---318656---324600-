@@ -75,4 +75,13 @@ public class ServicioUsuarios {
         return false;
     }
 
+    public Propietario obtenerPropietarioPorCedula(String cedula) throws PeajeException {
+        for(Propietario propietario : propietarios) {
+            if(propietario.getCedula().equals(cedula)) {
+                return propietario;
+            }
+        }
+        throw new PeajeException("No se encontró un propietario con la cédula indicada.");
+    }
+
 }

@@ -1,26 +1,21 @@
-package obligatorioAraujoSolari.Obligatorio.dominio;
+package obligatorioAraujoSolari.dtos;
 
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
+import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
 
-public class Tarifa {
+public class TarifaDto {
     @Getter
-    @Setter
     private double monto;
     @Getter
-    @Setter
-    private PuestoPeaje puestoPeaje;
+    private String puestoPeaje;
     @Getter
-    @Setter
     private List<CategoriaVehiculo> categoriasVehiculos;
 
-    public Tarifa(double monto, PuestoPeaje puestoPeaje, List<CategoriaVehiculo> categoriasVehiculos) {
+    public TarifaDto(double monto, String puestoPeaje, List<CategoriaVehiculo> categoriasVehiculos) {
         this.monto = monto;
         this.puestoPeaje = puestoPeaje;
         this.categoriasVehiculos = categoriasVehiculos;
     }
-
-    public Tarifa() {}
 }

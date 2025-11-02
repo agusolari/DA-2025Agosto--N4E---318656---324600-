@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
-
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
 import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;

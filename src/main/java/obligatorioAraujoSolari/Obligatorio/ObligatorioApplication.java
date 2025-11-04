@@ -6,7 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
+import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionExonerados;
+import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionFrecuentes;
+import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionTrabajadores;
 import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
+import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
 import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
@@ -114,6 +118,18 @@ public class ObligatorioApplication {
 			FachadaServicio.getInstancia().crearVehiculo(new Vehiculo("MNO345", "Blanco", "Camion", propietario1, categoriaCamion));
 			FachadaServicio.getInstancia().crearVehiculo(new Vehiculo("GHI789", "Verde", "Deportivo", propietario2, categoriaMoto));
 			FachadaServicio.getInstancia().crearVehiculo(new Vehiculo("JKL012", "Negro", "Camioneta", propietario2, categoriaCamion));
+
+			// Creacion de bonificaciones
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionTrabajadores(propietario1, puesto1));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionExonerados(propietario2, puesto2));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionFrecuentes(propietario1, puesto3));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionFrecuentes(propietario2, puesto4));
+
+			// Creacion de estados
+			FachadaServicio.getInstancia().agregarEstado(new Estado("Habilitado", "Es el estado por defecto de los propietarios cuando se dan de alta en el sistema. El propietario tiene todas las funcionalidades habilitadas."));
+			FachadaServicio.getInstancia().agregarEstado(new Estado("Deshabilitado", "El usuario no puede ingresar al sistema ni puede realizar tránsitos. Tampoco se le pueden asignar bonificaciones."));
+			FachadaServicio.getInstancia().agregarEstado(new Estado("Suspendido", "El usuario puede ingresar al sistema, pero no puede realizar tránsitos."));
+			FachadaServicio.getInstancia().agregarEstado(new Estado("Penalizado", "El usuario puede ingresar al sistema, pero no se le registran notificaciones. Puede realizar tránsitos, pero no aplican las bonificaciones que tenga asignadas. "));
 		}
 		catch(PeajeException e){
 			System.out.println("Error cargando datos de prueba: " + e.getMessage());

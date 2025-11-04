@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login Administrador</title>
+    <script src="/js/utilesVista.js"></script>
+    <script src="/js/vistaWeb.js"></script>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <h1>Login Administrador</h1>
+    <div id="formLogin">
+        <form id="loginForm" onsubmit="login(event)">
+            <div>
+                <label for="cedula">Cédula:</label>
+                <input type="text" id="cedula" name="cedula" required>
+            </div>
+            <div>
+                <label for="contrasenia">Contraseña:</label>
+                <input type="password" id="contrasenia" name="contrasenia" required>
+            </div>
+            <button type="submit">Ingresar</button>
+        </form>
+    </div>
+    <div id="mensajes"></div>
+
+    <script>
+        function login(event) {
+            event.preventDefault();
+            
+            const cedula = document.getElementById('cedula').value;
+            const contrasenia = document.getElementById('contrasenia').value;
+            
+            fetch('/login/loginAdministrador', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `cedula=${encodeURIComponent(cedula)}&contrasenia=${encodeURIComponent(contrasenia)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data[0] && data[0].tipo === "loginExitoso") {
+                    window.location.href = data[0].mensaje;
+                } else {
+                    document.getElementById('mensajes').innerHTML = 
+                        '<p class="error">Error en el login. Verifique sus credenciales.</p>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('mensajes').innerHTML = 
+                    '<p class="error">Error en el sistema. Intente nuevamente.</p>';
+            });
+        }
+    </script>
+    <script>
+    function acceder(event) {
+        event.preventDefault(); // Evita el envío tradicional del formulario
+        submit("acceso/loginUsuarioAdministrador", serializarFormulario("formLogin"));
+    }
+
+    async function excepcionDeAplicacion(text) {
+       await mostrarMensaje(text);
+    }
+
+    function mostrar_loginExitoso(urlDestino) {
+        window.location.href = urlDestino;
+    }
+</script>
+</body>
+</html>

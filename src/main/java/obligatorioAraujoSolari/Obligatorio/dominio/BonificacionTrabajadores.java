@@ -2,8 +2,8 @@ package obligatorioAraujoSolari.Obligatorio.dominio;
 
 public class BonificacionTrabajadores extends Bonificacion {
 
-    public BonificacionTrabajadores(Propietario propietario, PuestoPeaje puestoPeaje, Transito transito) {
-        super("Trabajadores", "Tienen un 80% de descuento si el tránsito por el puesto asignado se realiza en un día de semana.", propietario, puestoPeaje, transito);
+    public BonificacionTrabajadores(Propietario propietario, PuestoPeaje puestoPeaje) {
+        super("Trabajadores", "Tienen un 80% de descuento si el tránsito por el puesto asignado se realiza en un día de semana.", propietario, puestoPeaje);
     }
 
     @Override

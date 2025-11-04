@@ -15,5 +15,6 @@ public class Estado {
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
-
+// preguntar si se aplica patron state porque no identificamos cambios de comportamiento y por lo tanto metodos que
+// permitan el cambio de un estado a otro 
 }

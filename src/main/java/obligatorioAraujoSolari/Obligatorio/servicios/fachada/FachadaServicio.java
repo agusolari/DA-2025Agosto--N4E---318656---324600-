@@ -3,13 +3,16 @@ package obligatorioAraujoSolari.Obligatorio.servicios.fachada;
 import java.util.List;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
+import obligatorioAraujoSolari.Obligatorio.dominio.Bonificacion;
 import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
+import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
 import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
 import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.ServicioPeajes;
+import obligatorioAraujoSolari.Obligatorio.servicios.ServicioTransito;
 import obligatorioAraujoSolari.Obligatorio.servicios.ServicioUsuarios;
 import obligatorioAraujoSolari.Obligatorio.servicios.ServicioVehiculos;
 
@@ -19,11 +22,13 @@ public class FachadaServicio {
     private ServicioUsuarios servicioUsuarios;
     private ServicioPeajes servicioPeajes;
     private ServicioVehiculos servicioVehiculos;
+    private ServicioTransito servicioTransito;
 
     private FachadaServicio() {
         servicioUsuarios = new ServicioUsuarios();
         servicioPeajes = new ServicioPeajes();
         servicioVehiculos = new ServicioVehiculos();
+        servicioTransito = new ServicioTransito();
     }
 
     public static FachadaServicio getInstancia() {
@@ -64,6 +69,14 @@ public class FachadaServicio {
 
     public Propietario obtenerPropietarioPorCedula(String cedula) throws PeajeException {
         return servicioUsuarios.obtenerPropietarioPorCedula(cedula);
+    }
+
+    public List<Estado> getEstados() {
+        return servicioUsuarios.getEstados();
+    }
+
+    public void agregarEstado(Estado estado) {
+        servicioUsuarios.agregarEstado(estado);
     }
 
     /* <--------- Servicios de Peajes ---------> */
@@ -109,4 +122,15 @@ public class FachadaServicio {
     public List<Vehiculo> obtenerVehiculosPorPropietario(Propietario propietario) throws PeajeException {
         return servicioVehiculos.obtenerVehiculosPorPropietario(propietario);
     }
+
+    /* <--------- Servicios de transito ---------> */
+
+     public void agregarBonificacion(Bonificacion bonificacion) {
+        servicioTransito.agregarBonificacion(bonificacion);
+    }
+
+    public List<Bonificacion> getBonificaciones() {
+        return servicioTransito.getBonificaciones();
+    }
+
 }

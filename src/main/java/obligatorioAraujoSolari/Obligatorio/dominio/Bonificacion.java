@@ -21,14 +21,11 @@ public abstract class Bonificacion {
     @Setter
     private String descripcion;
 
-    public Bonificacion(String nombre, String descripcion, Propietario propietario, PuestoPeaje puestoPeaje, Transito transito) {
+    public Bonificacion(String nombre, String descripcion, Propietario propietario, PuestoPeaje puestoPeaje) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.propietario = propietario;
         this.puestoPeaje = puestoPeaje;
-        this.transito = transito;
     }
-    public Bonificacion() {}
-
     protected abstract double calcularDescuento();
 }

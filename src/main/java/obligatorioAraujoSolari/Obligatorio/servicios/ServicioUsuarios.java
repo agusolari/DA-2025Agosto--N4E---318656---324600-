@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
+import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.Sesion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Usuario;
@@ -15,11 +16,13 @@ public class ServicioUsuarios {
     private List<Propietario> propietarios;
     private List<Administrador> administradores;
     private List<Sesion> sesionesActivas = new ArrayList<>();
+    private List<Estado> estados;
 
     public ServicioUsuarios() {
         //TODO: Preguntar si es mejor que haya 2 listas o una única de usuarios.
         this.propietarios = new ArrayList<>();
         this.administradores = new ArrayList<>();
+        this.estados = new ArrayList<>();
     }
 
     public Propietario loginUsuarioPropietario(String cedula, String contrasenia) throws PeajeException {
@@ -84,4 +87,11 @@ public class ServicioUsuarios {
         throw new PeajeException("No se encontró un propietario con la cédula indicada.");
     }
 
+    public List<Estado> getEstados() {
+        return estados;
+    }
+
+    public void agregarEstado(Estado estado) {
+        estados.add(estado);
+    }
 }

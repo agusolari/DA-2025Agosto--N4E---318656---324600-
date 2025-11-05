@@ -36,6 +36,7 @@ public class ObligatorioApplication {
 			// Creación de propietarios
 			FachadaServicio.getInstancia().registrarPropietario(new Propietario("Usuario Propietario", "prop.123", "23456789", 2000));
 			FachadaServicio.getInstancia().registrarPropietario(new Propietario("Hernan Araujo", "321", "23456111", 1000));
+			FachadaServicio.getInstancia().registrarPropietario(new Propietario("Juan Perez", "juan.456", "29876543", 1500));
 
 			// Creación de puestos de peaje
 			FachadaServicio.getInstancia().agregarPuestoPeaje((new PuestoPeaje("Puesto 1", "Ruta 1 Km 10")));

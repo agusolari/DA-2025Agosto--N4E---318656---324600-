@@ -25,16 +25,20 @@ public class ServicioUsuarios {
         this.estados = new ArrayList<>();
     }
 
-    public Propietario loginUsuarioPropietario(String cedula, String contrasenia) throws PeajeException {
+    public Sesion loginUsuarioPropietario(String cedula, String contrasenia) throws PeajeException {
         Propietario usuario = (Propietario) login(cedula, contrasenia, propietarios, "Usuario de propietario y/o contraseña incorrectos");
         Sesion sesion = new Sesion(usuario);
         sesion.setFechaInicio(new Date());
         sesionesActivas.add(sesion);
-        return usuario;
+        return sesion;
     }
 
-    public Administrador loginUsuarioAdministrador(String cedula, String contrasenia) throws PeajeException {
-        return (Administrador) login(cedula, contrasenia, administradores, "Usuario administrador y/o contraseña incorrectos");
+    public Sesion loginUsuarioAdministrador(String cedula, String contrasenia) throws PeajeException {
+        Administrador usuario = (Administrador) login(cedula, contrasenia, administradores, "Usuario administrador y/o contraseña incorrectos");
+        Sesion sesion = new Sesion(usuario);
+        sesion.setFechaInicio(new Date());
+        sesionesActivas.add(sesion);
+        return sesion;
     }
 
     private Usuario login(String cedula, String contrasenia, List<? extends Usuario> usuarios, String mensajeLoginIncorrecto) throws PeajeException {
@@ -94,4 +98,10 @@ public class ServicioUsuarios {
     public void agregarEstado(Estado estado) {
         estados.add(estado);
     }
+
+    public void logout(Sesion sesion) {
+        sesionesActivas.remove(sesion);
+        // FachadaServicios.getInstancia().notificar(Observador.Evento.SESION_ACTUALIZADA);
+    }
+
 }

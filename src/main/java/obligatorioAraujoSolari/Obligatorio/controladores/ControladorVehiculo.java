@@ -7,6 +7,7 @@ import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
+import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
 
 import java.util.List;
 
@@ -18,12 +19,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/vehiculos")
 public class ControladorVehiculo {
-    @GetMapping("obtenerVehiculosPorPropietario")
-    public List<Vehiculo> obtenerVehiculosPorPropietario(@RequestParam String cedulaPropietario) throws PeajeException {
+
+    //TODO: Preguntar si está bien tener un controlador separado para cada entidad o si debería ir todo en el controlador del propietario
+    @GetMapping("/obtenerVehiculosPorPropietario")
+    public List<Respuesta> obtenerVehiculosPorPropietario(@RequestParam String cedulaPropietario) throws PeajeException {
         Propietario propietario = FachadaServicio.getInstancia().obtenerPropietarioPorCedula(cedulaPropietario);
         List<Vehiculo> vehiculos = FachadaServicio.getInstancia().obtenerVehiculosPorPropietario(propietario);
-        
-        return vehiculos;
+
+        //TODO: Es necesario pasar un id para mostrar en la vista?
+        return Respuesta.lista(vehiculos);
     }
-    
+
+    @GetMapping("/obtenerTransitosporVehiculo")
+    public List<Respuesta> obtenerTransitosporVehiculos(@RequestParam List<String> matriculas) throws PeajeException {
+        List<Transito> transitos = new ArrayList<>();
+        for (String matricula : matriculas) {
+            Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
+            transitos.addAll(FachadaServicio.getInstancia().obtenerTransitosporVehiculo(vehiculo));
+        }
+        return Respuesta.lista(transitos);
+    }
+
 }

@@ -121,10 +121,10 @@ public class ObligatorioApplication {
 			FachadaServicio.getInstancia().crearVehiculo(new Vehiculo("JKL012", "Negro", "Camioneta", propietario2, categoriaCamion));
 
 			// Creacion de bonificaciones
-			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionTrabajadores(propietario1, puesto1));
-			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionExonerados(propietario2, puesto2));
-			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionFrecuentes(propietario1, puesto3));
-			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionFrecuentes(propietario2, puesto4));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionTrabajadores(propietario1, puesto1, "2025-11-09"));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionExonerados(propietario2, puesto2, "2025-11-09"));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionFrecuentes(propietario1, puesto3, "2025-11-11"));
+			FachadaServicio.getInstancia().agregarBonificacion(new BonificacionFrecuentes(propietario2, puesto4, "2025-11-12"));
 
 			// Creacion de estados
 			FachadaServicio.getInstancia().agregarEstado(new Estado("Habilitado", "Es el estado por defecto de los propietarios cuando se dan de alta en el sistema. El propietario tiene todas las funcionalidades habilitadas."));

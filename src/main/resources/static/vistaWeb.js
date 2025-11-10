@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Ejecuta un endpoint usando fetch y envía datos en formato URL Encoded
 function submit(endPointUrl, urlEncodedData) {
+    console.log("submit a " + endPointUrl + " con datos: " + urlEncodedData);
+    
     fetch(endPointUrl, {
         method: 'POST',
         headers: {
@@ -37,6 +39,9 @@ function submit(endPointUrl, urlEncodedData) {
         },
         body: urlEncodedData
     }).then(async response => {
+        console.log("Respuesta recibida del servidor con status: " + response.status + " con respuesta: " + response);
+        
+        
         const status = response.status;
         const text = await response.text();
         //Si el servidor responede con error

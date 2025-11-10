@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login Propietario</title>
-    <script src="/js/utilesVista.js"></script>
-    <script src="/js/vistaWeb.js"></script>
-    <link rel="stylesheet" href="/css/estilos.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Propietario - Sistema de Peajes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script src="vistaWeb.js"></script>
 </head>
 <body>
-    <h1>Login Propietario</h1>
-    <div id="formLogin">
-        <form id="loginForm" onsubmit="login(event)">
+    <script src="utilesVista.js"></script>
+    <h1>🚗 Login Propietario</h1>
+    <div class="container-login">
+        <form id="formLoginPropietario" action="/acceso/loginPropietario" method="post" onsubmit="acceder(event);">
             <div>
                 <label for="cedula">Cédula:</label>
                 <input type="text" id="cedula" name="cedula" required>
@@ -24,34 +25,60 @@
     </div>
     <div id="mensajes"></div>
 
+</body>
     <script>
-        function login(event) {
+        function acceder(event) {
+            console.log('acceder function called');
             event.preventDefault();
             
-            const cedula = document.getElementById('cedula').value;
-            const contrasenia = document.getElementById('contrasenia').value;
+            // Debug: verificar que el formulario existe
+            const form = document.getElementById("formLoginPropietario");
+            console.log('Form element:', form);
+            console.log('Form tag name:', form ? form.tagName : 'null');
             
-            fetch('/login/loginPropietario', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `cedula=${encodeURIComponent(cedula)}&contrasenia=${encodeURIComponent(contrasenia)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data[0] && data[0].tipo === "loginExitoso") {
-                    window.location.href = data[0].mensaje;
-                } else {
-                    document.getElementById('mensajes').innerHTML = 
-                        '<p class="error">Error en el login. Verifique sus credenciales.</p>';
-                }
-            })
-            .catch(error => {
+            const serializedData = serializarFormulario("formLoginPropietario");
+            console.log('Serialized data:', serializedData);
+            
+            if (serializedData) {
+                console.log('Enviando request a /login/loginPropietario con datos:', serializedData);
+                submit("/acceso/loginPropietario", serializedData);
+            } else {
+                console.error('No se pudo serializar el formulario');
                 document.getElementById('mensajes').innerHTML = 
-                    '<p class="error">Error en el sistema. Intente nuevamente.</p>';
-            });
+                    '<p class="error">❌ Error al procesar el formulario</p>';
+            }
+        }
+
+        // Función que maneja excepciones de aplicación (credenciales incorrectas)
+        async function excepcionDeAplicacion(text) {
+            console.log('excepcionDeAplicacion called with:', text);
+            document.getElementById('mensajes').innerHTML = 
+                `<p class="error">❌ ${text}</p>`;
+        }
+
+        // Función que maneja el login exitoso
+        function mostrar_loginExitoso(urlDestino) {
+            console.log('mostrar_loginExitoso called with:', urlDestino);
+            console.log('Redirigiendo a:', urlDestino);
+            window.location.href = urlDestino;
+        }
+
+        // Función de debug para ver la respuesta completa
+        function procesarRespuestaSubmit(text) {
+            console.log('procesarRespuestaSubmit called with raw text:', text);
+            try {
+                const json = JSON.parse(text);
+                console.log('Parsed JSON:', json);
+            } catch (e) {
+                console.error('Error parsing JSON:', e);
+            }
+        }
+
+        // Función que maneja errores de conexión/servidor
+        function procesarErrorSubmit(status, text) {
+            console.log('procesarErrorSubmit called with:', status, text);
+            document.getElementById('mensajes').innerHTML = 
+                '<p class="error">⚠️ Error de conexión. Intente nuevamente.</p>';
         }
     </script>
-</body>
 </html>

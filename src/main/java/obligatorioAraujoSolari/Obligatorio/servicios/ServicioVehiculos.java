@@ -42,5 +42,14 @@ public class ServicioVehiculos {
         
     }
     return vehiculosPorPropietario;
-}
+    }
+
+    public Vehiculo obtenerVehiculoPorMatricula(String matricula) throws PeajeException {
+        for (Vehiculo vehiculo : vehiculos) {
+            if (vehiculo.getMatricula().equals(matricula)) {
+                return vehiculo;
+            }
+        }
+        throw new PeajeException("No se encontró un vehículo con la matrícula indicada.");
+    }
 }

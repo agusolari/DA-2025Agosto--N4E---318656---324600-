@@ -22,7 +22,7 @@ public class Transito {
     private Bonificacion bonificacion;
     @Getter
     @Setter
-    private LocalDateTime fechaHora; 
+    private LocalDateTime fechaHora;
     
     public Transito(Vehiculo vehiculo, PuestoPeaje puestoPeaje, Tarifa tarifa, Notificacion notificacion,
             Bonificacion bonificacion) {

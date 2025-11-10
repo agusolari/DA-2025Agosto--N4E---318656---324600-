@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Propietario - Sistema de Peajes</title>
+    <script src="utilesVista.js"></script>
+    <script src="vistaWeb.js"></script>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <h1>🚗 Panel de Propietario</h1>
+    <div id="menuOpciones">
+        <button onclick="irA('/propietario/misVehiculos')">🚙 Mis Vehículos</button>
+        <button onclick="irA('/propietario/recargarSaldo')">💳 Recargar Saldo</button>
+        <button onclick="irA('/propietario/misBonificaciones')">🎁 Mis Bonificaciones</button>
+        <button onclick="irA('/propietario/misTransitos')">📋 Historial de Tránsitos</button>
+        <button onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+    </div>
+
+    <div id="mensajes"></div>
+
+    <script>
+		urlIniciarVista="/tableroPropietario/cargarVista";
+
+        function mostrar_usuarioNoAutenticado(urlDestino){
+            window.location.href = urlDestino;
+        }
+
+        function cerrarSesion(){
+            submit('/acceso/logout', null);
+        }
+
+    </script>
+</body>
+</html>

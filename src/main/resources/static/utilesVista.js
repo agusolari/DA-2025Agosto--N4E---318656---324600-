@@ -164,7 +164,9 @@
 //retorna los campos de un formulario en formato url-encoded para pasarlos a la vista
 function serializarFormulario(idFormulario) {
     var form = document.getElementById(idFormulario);
+    
     if (!form) {
+      console.log("Serializando formulario:", idFormulario, form);
         console.warn("Formulario con id '" + idFormulario + "' no encontrado.");
         return '';
     }

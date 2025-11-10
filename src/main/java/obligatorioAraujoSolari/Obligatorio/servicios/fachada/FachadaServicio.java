@@ -8,7 +8,9 @@ import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
 import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
+import obligatorioAraujoSolari.Obligatorio.dominio.Sesion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
+import obligatorioAraujoSolari.Obligatorio.dominio.Transito;
 import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.ServicioPeajes;
@@ -39,12 +41,16 @@ public class FachadaServicio {
     }
 
     /* <--------- Servicios de Usuarios ---------> */
-    public Propietario loginUsuarioPropietario(String cedula, String contrasenia) throws PeajeException{
+    public Sesion loginUsuarioPropietario(String cedula, String contrasenia) throws PeajeException{
         return servicioUsuarios.loginUsuarioPropietario(cedula, contrasenia);
     }
 
-    public Administrador loginUsuarioAdministrador(String cedula, String contrasenia) throws PeajeException{
+    public Sesion loginUsuarioAdministrador(String cedula, String contrasenia) throws PeajeException{
         return servicioUsuarios.loginUsuarioAdministrador(cedula, contrasenia);
+    }
+
+    public void logout(Sesion sesion) {
+        servicioUsuarios.logout(sesion);
     }
 
     public void registrarPropietario(Propietario propietario) throws PeajeException {
@@ -103,34 +109,44 @@ public class FachadaServicio {
         return servicioVehiculos.getCategoriasVehiculos();
     }
 
+
     /* <--------- Servicios de Tarifas ---------> */
 
+    
     public void agregarTarifa(Tarifa tarifa) {
         servicioPeajes.agregarTarifa(tarifa);
     }
-
+    
     public List<Tarifa> getTarifas() {
         return servicioPeajes.getTarifas();
     }
-
+    
     /* <--------- Servicios de Vehiculos ---------> */
-
+    
     public void crearVehiculo(Vehiculo vehiculo) {
         servicioVehiculos.crearVehiculo(vehiculo);
     }
-
+    
     public List<Vehiculo> obtenerVehiculosPorPropietario(Propietario propietario) throws PeajeException {
         return servicioVehiculos.obtenerVehiculosPorPropietario(propietario);
     }
-
+    
+    public Vehiculo obtenerVehiculoPorMatricula(String matricula) throws PeajeException {
+        return servicioVehiculos.obtenerVehiculoPorMatricula(matricula);
+    }
+    
     /* <--------- Servicios de transito ---------> */
+    
 
-     public void agregarBonificacion(Bonificacion bonificacion) {
+    public void agregarBonificacion(Bonificacion bonificacion) {
         servicioTransito.agregarBonificacion(bonificacion);
     }
-
+    
     public List<Bonificacion> getBonificaciones() {
         return servicioTransito.getBonificaciones();
     }
-
+    
+    public List<Transito> obtenerTransitosPorVehiculo(Vehiculo vehiculo) throws PeajeException {
+        return servicioTransito.obtenerTransitosPorVehiculo(vehiculo);
+    }
 }

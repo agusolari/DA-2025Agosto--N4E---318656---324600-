@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Administrador - Sistema de Peajes</title>
+    <script src="utilesVista.js"></script>
+    <script src="vistaWeb.js"></script>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <h1>⚙️ Panel de Administración</h1>
+    <div id="menuOpciones">
+        <button onclick="irA('/administrador/gestionPropietarios')">👥 Gestión de Propietarios</button>
+        <button onclick="irA('/administrador/gestionPeajes')">🛣️ Gestión de Peajes</button>
+        <button onclick="irA('/administrador/gestionTarifas')">💰 Gestión de Tarifas</button>
+        <button onclick="irA('/administrador/reportes')">📊 Reportes</button>
+        <button onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+    </div>
+
+    <div id="mensajes"></div>
+
+    <script>
+        function cerrarSesion() {
+            fetch('/sesion/cerrar', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/index.html';
+                });
+        }
+
+        function irA(ruta) {
+            window.location.href = ruta;
+        }
+    </script>
+</body>
+</html>

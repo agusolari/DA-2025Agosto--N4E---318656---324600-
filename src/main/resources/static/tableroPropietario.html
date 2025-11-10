@@ -3,34 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Propietario - Sistema de Peajes</title>
+    <title>Tablero de Control del Propietario - Sistema de Peajes</title>
     <script src="utilesVista.js"></script>
     <script src="vistaWeb.js"></script>
     <link rel="stylesheet" href="css/estilos.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            background: var(--color-carta);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid var(--color-borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .dashboard-title h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        
+        .logout-btn {
+            background: var(--color-acento);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transicion);
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .summary-section {
+            background: var(--color-carta);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid var(--color-borde);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--border-radius);
+            background: var(--color-fondo);
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            color: var(--color-texto-claro);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .summary-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--color-principal);
+        }
+        
+        .saldo-value {
+            color: var(--color-exito);
+            font-size: 1.6em;
+        }
+        
+        .section {
+            background: var(--color-carta);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid var(--color-borde);
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            color: var(--color-principal);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-fondo);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .data-container {
+            min-height: 200px;
+        }
+        
+        .loading-message {
+            text-align: center;
+            color: var(--color-texto-claro);
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        .no-data-message {
+            text-align: center;
+            color: var(--color-texto-claro);
+            background: var(--color-fondo);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            font-style: italic;
+        }
+        
+        .notification-actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .clear-notifications-btn {
+            background: var(--color-advertencia);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transicion);
+        }
+        
+        .clear-notifications-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>🚗 Panel de Propietario</h1>
-    <div id="menuOpciones">
-        <button onclick="irA('/propietario/misVehiculos')">🚙 Mis Vehículos</button>
-        <button onclick="irA('/propietario/recargarSaldo')">💳 Recargar Saldo</button>
-        <button onclick="irA('/propietario/misBonificaciones')">🎁 Mis Bonificaciones</button>
-        <button onclick="irA('/propietario/misTransitos')">📋 Historial de Tránsitos</button>
-        <button onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <span>🚗</span>
+                <h1>Tablero de control del propietario</h1>
+            </div>
+            <button class="logout-btn" onclick="cerrarSesion()">🚪 Salir</button>
+        </div>
+
+        <!-- Resumen del propietario -->
+        <div class="summary-section">
+            <h2>Resumen del propietario</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Nombre Completo</div>
+                    <div class="summary-value" id="nombreCompleto">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Estado</div>
+                    <div class="summary-value" id="estado">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Saldo Actual</div>
+                    <div class="summary-value saldo-value" id="saldoActual">$ 0,00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <!-- Bonificaciones asignadas -->
+            <div class="section">
+                <h3 class="section-title">
+                    <span>🎁</span>
+                    Bonificaciones asignadas
+                </h3>
+                <div class="data-container" id="bonificacionesContainer">
+                    <div class="loading-message">Cargando bonificaciones...</div>
+                </div>
+            </div>
+
+            <!-- Vehículos registrados -->
+            <div class="section">
+                <h3 class="section-title">
+                    <span>🚙</span>
+                    Vehículos registrados
+                </h3>
+                <div class="data-container" id="vehiculosContainer">
+                    <div class="loading-message">Cargando vehículos...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tránsitos realizados -->
+        <div class="section">
+            <h3 class="section-title">
+                <span>📋</span>
+                Tránsitos realizados
+            </h3>
+            <div class="data-container" id="transitosContainer">
+                <div class="loading-message">Cargando tránsitos...</div>
+            </div>
+        </div>
+
+        <!-- Notificaciones del sistema -->
+        <div class="section">
+            <h3 class="section-title">
+                <span>🔔</span>
+                Notificaciones del sistema
+            </h3>
+            <div class="data-container" id="notificacionesContainer">
+                <div class="loading-message">Cargando notificaciones...</div>
+            </div>
+            <div class="notification-actions">
+                <button class="clear-notifications-btn" onclick="borrarNotificaciones()">
+                    🗑️ Borrar notificaciones
+                </button>
+            </div>
+        </div>
     </div>
 
     <div id="mensajes"></div>
 
     <script>
-		urlIniciarVista="/tableroPropietario/cargarVista";
+        urlIniciarVista = "/tableroPropietario/cargarVista";
+        let cedulaUsuario = null;
+        let vehiculosUsuario = [];
 
-        function mostrar_usuarioNoAutenticado(urlDestino){
+        function mostrar_usuarioNoAutenticado(urlDestino) {
             window.location.href = urlDestino;
         }
 
-        function cerrarSesion(){
+        function mostrar_cedula(cedula) {
+            cedulaUsuario = cedula;
+            cargarDatosPropietario(cedula);
+        }
+
+        function cargarDatosPropietario(cedula) {
+            // Cargar datos del propietario
+            submit('/propietario/obtenerUsuario?cedula=' + encodeURIComponent(cedula));
+            
+            // Cargar bonificaciones
+            submit('/propietario/obtenerBonificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
+            
+            // Cargar vehículos
+            submit('/vehiculos/obtenerVehiculosPorPropietario?cedulaPropietario=' + encodeURIComponent(cedula));
+            
+            // Cargar notificaciones
+            submit('/propietario/obtenerNotificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
+        }
+
+        function mostrar_propietario(datos) {
+            document.getElementById('nombreCompleto').textContent = datos.nombreCompleto || 'No disponible';
+            document.getElementById('estado').textContent = datos.estado?.nombre || 'No disponible';
+            document.getElementById('saldoActual').textContent = '$ ' + (datos.saldo ? datos.saldo.toFixed(2) : '0,00');
+        }
+
+        function mostrar_bonificaciones(bonificaciones) {
+            const container = document.getElementById('bonificacionesContainer');
+            
+            if (!bonificaciones || bonificaciones.length === 0) {
+                container.innerHTML = '<div class="no-data-message">No hay bonificaciones asignadas</div>';
+                return;
+            }
+
+            // Crear tabla con las bonificaciones
+            const tableHtml = crearTablaDesdeJson(bonificaciones.map(b => ({
+                bonificacion: b.tipoDescuento || 'No especificado',
+                puesto: b.puestoPeaje?.nombre || 'No especificado',
+                fechaAsignada: b.fechaAsignion || 'No disponible'
+            })));
+            
+            container.innerHTML = tableHtml;
+        }
+
+        function mostrar_0(vehiculos) { // Esta es la respuesta del endpoint de vehículos
+            vehiculosUsuario = vehiculos || [];
+            const container = document.getElementById('vehiculosContainer');
+            
+            if (!vehiculos || vehiculos.length === 0) {
+                container.innerHTML = '<div class="no-data-message">No hay vehículos registrados</div>';
+                return;
+            }
+
+            // Crear tabla con los vehículos
+            const tableHtml = crearTablaDesdeJson(vehiculos.map(v => ({
+                matricula: v.matricula || 'No disponible',
+                modelo: v.modelo || 'No disponible',
+                color: v.color || 'No disponible',
+                transitos: v.transitos ? v.transitos.length : 0,
+                montoTotal: v.transitos ? '$ ' + v.transitos.reduce((sum, t) => sum + (t.montoPagado || 0), 0).toFixed(2) : '$ 0,00'
+            })));
+            
+            container.innerHTML = tableHtml;
+            
+            // Cargar tránsitos para todos los vehículos
+            if (vehiculos.length > 0) {
+                const matriculas = vehiculos.map(v => v.matricula).filter(m => m);
+                if (matriculas.length > 0) {
+                    cargarTransitos(matriculas);
+                }
+            }
+        }
+
+        function cargarTransitos(matriculas) {
+            if (!matriculas || matriculas.length === 0) {
+                document.getElementById('transitosContainer').innerHTML = 
+                    '<div class="no-data-message">No hay vehículos para mostrar tránsitos</div>';
+                return;
+            }
+            
+            // Construir la URL con los parámetros de matrícula
+            const params = matriculas.map(m => 'matriculas=' + encodeURIComponent(m)).join('&');
+            submit('/vehiculos/obtenerTransitosporVehiculo?' + params);
+        }
+
+        function mostrar_1(transitos) { // Esta es la respuesta del endpoint de tránsitos
+            const container = document.getElementById('transitosContainer');
+            
+            if (!transitos || transitos.length === 0) {
+                container.innerHTML = '<div class="no-data-message">No hay tránsitos realizados</div>';
+                return;
+            }
+
+            // Crear tabla con los tránsitos
+            const tableHtml = crearTablaDesdeJson(transitos.map(t => ({
+                puesto: t.puestoPeaje?.nombre || 'No disponible',
+                matricula: t.vehiculo?.matricula || 'No disponible',
+                categoria: t.vehiculo?.categoria?.nombre || 'No disponible',
+                montoTarifa: t.tarifa ? '$ ' + t.tarifa.toFixed(2) : '$ 0,00',
+                bonificacion: t.bonificacion?.tipoDescuento || 'Sin bonificación',
+                montoBonificacion: t.descuento ? '-$ ' + t.descuento.toFixed(2) : '$ 0,00',
+                montoPagado: '$ ' + (t.montoPagado || 0).toFixed(2),
+                fecha: t.fechaTransito || 'No disponible',
+                hora: t.horaTransito || 'No disponible'
+            })));
+            
+            container.innerHTML = tableHtml;
+        }
+
+        function mostrar_notificaciones(notificaciones) {
+            const container = document.getElementById('notificacionesContainer');
+            
+            if (!notificaciones || notificaciones.length === 0) {
+                container.innerHTML = '<div class="no-data-message">No hay notificaciones</div>';
+                return;
+            }
+
+            // Crear tabla con las notificaciones
+            const tableHtml = crearTablaDesdeJson(notificaciones.map(n => ({
+                mensaje: n.mensaje || 'Sin mensaje',
+                fecha: n.fechaNotificacion || 'No disponible',
+                tipo: n.tipoNotificacion || 'General'
+            })));
+            
+            container.innerHTML = tableHtml;
+        }
+
+        function cerrarSesion() {
             submit('/acceso/logout', null);
         }
 
+        function borrarNotificaciones() {
+            mostrarConfirmacion(
+                "¿Está seguro que desea borrar todas las notificaciones?",
+                "Sí, borrar",
+                "Cancelar"
+            ).then((respuesta) => {
+                if (respuesta) {
+                    // Aquí se podría implementar la funcionalidad de borrar notificaciones
+                    // Por ahora solo limpiamos visualmente
+                    document.getElementById('notificacionesContainer').innerHTML = 
+                        '<div class="no-data-message">No hay notificaciones</div>';
+                    mostrarMensaje("Notificaciones borradas correctamente");
+                }
+            });
+        }
+
+        function procesarErrorSubmit(status, text) {
+            console.error('Error en submit:', status, text);
+            document.getElementById('mensajes').innerHTML = 
+                '<p class="error">⚠️ Error de conexión. Intente nuevamente.</p>';
+        }
     </script>
 </body>
 </html>

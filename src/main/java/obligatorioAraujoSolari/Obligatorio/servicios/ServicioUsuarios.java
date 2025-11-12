@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Getter;
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
 import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
@@ -15,6 +16,7 @@ import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 public class ServicioUsuarios {
     private List<Propietario> propietarios;
     private List<Administrador> administradores;
+    @Getter
     private List<Sesion> sesionesActivas = new ArrayList<>();
     private List<Estado> estados;
 

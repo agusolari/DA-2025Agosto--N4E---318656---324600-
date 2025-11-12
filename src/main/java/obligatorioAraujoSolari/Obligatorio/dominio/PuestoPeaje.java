@@ -30,4 +30,7 @@ public class PuestoPeaje {
 
     public PuestoPeaje() {}
 
+    public void agregarTarifas(Tarifa tarifa) {
+        this.tarifas.add(tarifa);
+    }
 }

@@ -42,4 +42,15 @@ public class Propietario extends Usuario {
         this.saldoMinimoAlerta = 500;
     }
 
+    public void agregarVehiculo(Vehiculo vehiculo) {
+        this.vehiculos.add(vehiculo);
+    }
+
+    public void agregarNotificacion(Notificacion notificacion) {
+        this.notificaciones.add(notificacion);
+    }
+
+    public void agregarBonificacion(Bonificacion bonificacion) {
+        this.bonificaciones.add(bonificacion);
+    }
 }

@@ -63,4 +63,6 @@ public class Transito {
         }
         return costoBase - (costoBase * descuento);
     }
+    
+    //tenemos que crear el metodo para crear un transito desde esta clase 
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -23,12 +24,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("puestoPeaje")
 public class ControladorPuestoPeaje {
 
-    @GetMapping("/obtenerPuestos")
+    @PostMapping("/obtenerPuestos")
     public List<Respuesta> obtenerPuestos() throws PeajeException {
         return Respuesta.lista(new Respuesta("puestosPeaje", mapPuestoPeaje()));
     }
 
-    @GetMapping("/obtenerTarifasPorPuesto")
+    @PostMapping("/obtenerTarifasPorPuesto")
     public List<Respuesta> obtenerTarifasPorPuesto(@RequestParam String nombrePuesto) throws PeajeException {
         return Respuesta.lista(new Respuesta("tarifas", mapTarifasPorPuesto(nombrePuesto)));
     }

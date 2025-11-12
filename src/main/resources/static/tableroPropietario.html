@@ -4,16 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tablero de Control del Propietario - Sistema de Peajes</title>
-    <script src="utilesVista.js"></script>
-    <script src="vistaWeb.js"></script>
     <link rel="stylesheet" href="css/estilos.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #ecf0f1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            z-index: 100;
+        }
+
+        .sidebar label {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .sidebar button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            text-transform: none;
+            letter-spacing: normal;
+            margin: 5px 0;
+        }
+
+        .sidebar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateX(5px);
+        }
+
+        .sidebar button:last-child {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            margin-top: auto;
+        }
+
+        .sidebar button:last-child:hover {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
         .dashboard-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            width: 100%;
         }
-        
+
+        /* Secciones ocultas por defecto */
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
         .dashboard-header {
             background: var(--color-carta);
             border-radius: var(--border-radius);
@@ -25,18 +119,18 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .dashboard-title {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        
+
         .dashboard-title h1 {
             margin: 0;
             font-size: 1.8em;
         }
-        
+
         .logout-btn {
             background: var(--color-acento);
             color: white;
@@ -46,12 +140,12 @@
             cursor: pointer;
             transition: var(--transicion);
         }
-        
+
         .logout-btn:hover {
             background: #c0392b;
             transform: translateY(-2px);
         }
-        
+
         .summary-section {
             background: var(--color-carta);
             border-radius: var(--border-radius);
@@ -60,13 +154,13 @@
             box-shadow: var(--sombra-suave);
             border: 1px solid var(--color-borde);
         }
-        
+
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
-        
+
         .summary-item {
             text-align: center;
             padding: 20px;
@@ -74,7 +168,7 @@
             border-radius: var(--border-radius);
             background: var(--color-fondo);
         }
-        
+
         .summary-label {
             font-weight: 600;
             color: var(--color-texto-claro);
@@ -83,18 +177,18 @@
             letter-spacing: 0.5px;
             margin-bottom: 10px;
         }
-        
+
         .summary-value {
             font-size: 1.4em;
             font-weight: bold;
             color: var(--color-principal);
         }
-        
+
         .saldo-value {
             color: var(--color-exito);
             font-size: 1.6em;
         }
-        
+
         .section {
             background: var(--color-carta);
             border-radius: var(--border-radius);
@@ -103,7 +197,7 @@
             box-shadow: var(--sombra-suave);
             border: 1px solid var(--color-borde);
         }
-        
+
         .section-title {
             font-size: 1.3em;
             color: var(--color-principal);
@@ -114,24 +208,24 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
-        
+
         .data-container {
             min-height: 200px;
         }
-        
+
         .loading-message {
             text-align: center;
             color: var(--color-texto-claro);
             font-style: italic;
             padding: 20px;
         }
-        
+
         .no-data-message {
             text-align: center;
             color: var(--color-texto-claro);
@@ -140,131 +234,241 @@
             border-radius: var(--border-radius);
             font-style: italic;
         }
-        
-        .notification-actions {
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        .clear-notifications-btn {
-            background: var(--color-advertencia);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transicion);
-        }
-        
-        .clear-notifications-btn:hover {
-            background: #e67e22;
-            transform: translateY(-2px);
-        }
-        
+
         @media (max-width: 768px) {
+            .sidebar {
+                width: 150px;
+                padding: 10px;
+            }
+
+            .main-content {
+                margin-left: 150px;
+            }
+
             .dashboard-header {
                 flex-direction: column;
                 gap: 15px;
-                text-align: center;
             }
-            
+
             .two-column {
                 grid-template-columns: 1fr;
             }
-            
+
             .summary-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
+    <script src="vistaWeb.js"></script>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div class="dashboard-title">
-                <span>🚗</span>
-                <h1>Tablero de control del propietario</h1>
-            </div>
-            <button class="logout-btn" onclick="cerrarSesion()">🚪 Salir</button>
-        </div>
+    <script src="utilesVista.js"></script>
+    <div class="sidebar">
+        <label id="nombreCompleto"></label>
+        <button onclick="mostrarSeccion('dashboard')">📊 Dashboard</button>
+        <button onclick="mostrarSeccion('bonificaciones')">🎁 Bonificaciones</button>
+        <button onclick="mostrarSeccion('vehiculos')">🚙 Vehículos</button>
+        <button onclick="mostrarSeccion('transitos')">📋 Tránsitos</button>
+        <button onclick="mostrarSeccion('notificaciones')">🔔 Notificaciones</button>
+        <button onclick="logout()">🚪 Salir</button>
+    </div>
 
-        <!-- Resumen del propietario -->
-        <div class="summary-section">
-            <h2>Resumen del propietario</h2>
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <div class="summary-label">Nombre Completo</div>
-                    <div class="summary-value" id="nombreCompleto">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Estado</div>
-                    <div class="summary-value" id="estado">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Saldo Actual</div>
-                    <div class="summary-value saldo-value" id="saldoActual">$ 0,00</div>
-                </div>
-            </div>
-        </div>
+    <div class="main-content">
+        <div class="content-area">
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="section-content active">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">
+                            <span>🚗</span>
+                            <h1>Dashboard</h1>
+                        </div>
+                    </div>
 
-        <div class="two-column">
-            <!-- Bonificaciones asignadas -->
-            <div class="section">
-                <h3 class="section-title">
-                    <span>🎁</span>
-                    Bonificaciones asignadas
-                </h3>
-                <div class="data-container" id="bonificacionesContainer">
-                    <div class="loading-message">Cargando bonificaciones...</div>
+                    <div class="summary-section">
+                        <h2>Resumen de tu cuenta</h2>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">Nombre Completo</div>
+                                <div class="summary-value" id="nombrePropietario">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Estado</div>
+                                <div class="summary-value" id="estadoPropietario">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Saldo Disponible</div>
+                                <div class="summary-value saldo-value" id="saldoActual">$ 0,00</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Tránsitos Realizados</div>
+                                <div class="summary-value" id="totalTransitos">0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Bonificaciones Activas</div>
+                                <div class="summary-value" id="totalBonificaciones">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two-column">
+                        <div class="section">
+                            <h3 class="section-title">
+                                <span>🎁</span>
+                                Bonificaciones asignadas
+                            </h3>
+                            <div class="data-container" id="bonificacionesContainerDash">
+                                <div class="loading-message">Cargando bonificaciones...</div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3 class="section-title">
+                                <span>🚙</span>
+                                Vehículos registrados
+                            </h3>
+                            <div class="data-container" id="vehiculosContainerDash">
+                                <div class="loading-message">Cargando vehículos...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">
+                            <span>📋</span>
+                            Últimos tránsitos
+                        </h3>
+                        <div class="data-container" id="transitosContainerDash">
+                            <div class="loading-message">Cargando tránsitos...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Vehículos registrados -->
-            <div class="section">
-                <h3 class="section-title">
-                    <span>🚙</span>
-                    Vehículos registrados
-                </h3>
-                <div class="data-container" id="vehiculosContainer">
-                    <div class="loading-message">Cargando vehículos...</div>
+            <!-- BONIFICACIONES -->
+            <div id="bonificaciones" class="section-content">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">
+                            <span>🎁</span>
+                            <h1>Mis Bonificaciones</h1>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">Bonificaciones Activas</h3>
+                        <div class="data-container" id="bonificacionesContainer">
+                            <div class="loading-message">Cargando bonificaciones...</div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">Información de Bonificaciones</h3>
+                        <div style="background: #d6eaf8; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db;">
+                            <h4>Tipos de Bonificaciones Disponibles:</h4>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li><strong>Trabajadores:</strong> 80% de descuento en días de semana en puesto asignado</li>
+                                <li><strong>Exonerados:</strong> Según clasificación especial</li>
+                                <li><strong>Frecuentes:</strong> Descuentos por uso frecuente</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tránsitos realizados -->
-        <div class="section">
-            <h3 class="section-title">
-                <span>📋</span>
-                Tránsitos realizados
-            </h3>
-            <div class="data-container" id="transitosContainer">
-                <div class="loading-message">Cargando tránsitos...</div>
-            </div>
-        </div>
+            <!-- VEHÍCULOS -->
+            <div id="vehiculos" class="section-content">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">
+                            <span>🚙</span>
+                            <h1>Mis Vehículos</h1>
+                        </div>
+                    </div>
 
-        <!-- Notificaciones del sistema -->
-        <div class="section">
-            <h3 class="section-title">
-                <span>🔔</span>
-                Notificaciones del sistema
-            </h3>
-            <div class="data-container" id="notificacionesContainer">
-                <div class="loading-message">Cargando notificaciones...</div>
+                    <div class="section">
+                        <h3 class="section-title">Vehículos Registrados</h3>
+                        <div class="data-container" id="vehiculosContainer">
+                            <div class="loading-message">Cargando vehículos...</div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">Estadísticas de Vehículos</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">Total de Vehículos</div>
+                                <div class="summary-value" id="totalVehiculos">0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Tránsitos Totales</div>
+                                <div class="summary-value" id="totalTransitosVeh">0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Monto Total Pagado</div>
+                                <div class="summary-value saldo-value" id="montoTotal">$ 0,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="notification-actions">
-                <button class="clear-notifications-btn" onclick="borrarNotificaciones()">
-                    🗑️ Borrar notificaciones
-                </button>
+
+            <!-- TRÁNSITOS -->
+            <div id="transitos" class="section-content">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">
+                            <span>📋</span>
+                            <h1>Historial de Tránsitos</h1>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">Tránsitos Realizados</h3>
+                        <div class="data-container" id="transitosContainer">
+                            <div class="loading-message">Cargando tránsitos...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICACIONES -->
+            <div id="notificaciones" class="section-content">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">
+                            <span>🔔</span>
+                            <h1>Notificaciones del Sistema</h1>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">Mis Notificaciones</h3>
+                        <div class="data-container" id="notificacionesContainer">
+                            <div class="loading-message">Cargando notificaciones...</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <div id="mensajes"></div>
 
     <script>
         urlIniciarVista = "/tableroPropietario/cargarVista";
         let cedulaUsuario = null;
         let vehiculosUsuario = [];
+        let transitosUsuario = [];
+        let bonificacionesUsuario = [];
+
+        function mostrarSeccion(seccion) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(seccion).classList.add('active');
+        }
 
         function mostrar_usuarioNoAutenticado(urlDestino) {
             window.location.href = urlDestino;
@@ -276,65 +480,81 @@
         }
 
         function cargarDatosPropietario(cedula) {
-            // Cargar datos del propietario
-            submit('/propietario/obtenerUsuario?cedula=' + encodeURIComponent(cedula));
-            
-            // Cargar bonificaciones
-            submit('/propietario/obtenerBonificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
-            
-            // Cargar vehículos
+            // Cargar vehículos (respuesta.id = "vehiculos")
             submit('/vehiculos/obtenerVehiculosPorPropietario?cedulaPropietario=' + encodeURIComponent(cedula));
             
-            // Cargar notificaciones
+            // Cargar bonificaciones (respuesta.id = "bonificaciones")
+            submit('/propietario/obtenerBonificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
+            
+            // Cargar datos del propietario (respuesta.id = "propietario")
+            submit('/propietario/obtenerUsuario?cedula=' + encodeURIComponent(cedula));
+            
+            // Cargar notificaciones (respuesta.id = "notificaciones")
             submit('/propietario/obtenerNotificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
         }
 
         function mostrar_propietario(datos) {
-            document.getElementById('nombreCompleto').textContent = datos.nombreCompleto || 'No disponible';
-            document.getElementById('estado').textContent = datos.estado?.nombre || 'No disponible';
-            document.getElementById('saldoActual').textContent = '$ ' + (datos.saldo ? datos.saldo.toFixed(2) : '0,00');
+            if (datos) {
+                document.getElementById('nombreCompleto').textContent = "PEAJES - " + (datos.nombreCompleto || 'Usuario').toUpperCase();
+                document.getElementById('nombrePropietario').textContent = datos.nombreCompleto || 'No disponible';
+                document.getElementById('estadoPropietario').textContent = datos.estado?.nombre || 'No disponible';
+                document.getElementById('saldoActual').textContent = '$ ' + (datos.saldo ? datos.saldo.toFixed(2) : '0,00');
+            }
         }
 
         function mostrar_bonificaciones(bonificaciones) {
-            const container = document.getElementById('bonificacionesContainer');
+            bonificacionesUsuario = bonificaciones || [];
+            
+            // Actualizar dashboard
+            document.getElementById('totalBonificaciones').textContent = bonificaciones ? bonificaciones.length : 0;
+            renderBonificaciones('bonificacionesContainerDash', bonificaciones);
+            
+            // Actualizar sección de bonificaciones
+            renderBonificaciones('bonificacionesContainer', bonificaciones);
+        }
+
+        function renderBonificaciones(containerId, bonificaciones) {
+            const container = document.getElementById(containerId);
             
             if (!bonificaciones || bonificaciones.length === 0) {
                 container.innerHTML = '<div class="no-data-message">No hay bonificaciones asignadas</div>';
                 return;
             }
 
-            // Crear tabla con las bonificaciones
-            const tableHtml = crearTablaDesdeJson(bonificaciones.map(b => ({
-                bonificacion: b.tipoDescuento || 'No especificado',
-                puesto: b.puestoPeaje?.nombre || 'No especificado',
-                fechaAsignada: b.fechaAsignion || 'No disponible'
-            })));
+            let tableHtml = '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;"><thead style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;"><tr><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Tipo</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Descripción</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Puesto Peaje</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Fecha Asignación</th></tr></thead><tbody>';
             
+            bonificaciones.forEach(b => {
+                const fecha = b.fechaAsignacion ? new Date(b.fechaAsignacion).toLocaleDateString('es-UY') : 'No disponible';
+                tableHtml += `<tr style="border-bottom: 1px solid #bdc3c7;"><td style="padding: 12px;"><strong>${b.nombre || 'No especificado'}</strong></td><td style="padding: 12px;">${b.descripcion || 'No disponible'}</td><td style="padding: 12px;">${b.puestoPeaje || 'No especificado'}</td><td style="padding: 12px;">${fecha}</td></tr>`;
+            });
+            
+            tableHtml += '</tbody></table>';
             container.innerHTML = tableHtml;
         }
 
-        function mostrar_0(vehiculos) { // Esta es la respuesta del endpoint de vehículos
+        function mostrar_vehiculos(vehiculos) {
             vehiculosUsuario = vehiculos || [];
-            const container = document.getElementById('vehiculosContainer');
             
-            if (!vehiculos || vehiculos.length === 0) {
-                container.innerHTML = '<div class="no-data-message">No hay vehículos registrados</div>';
-                return;
-            }
-
-            // Crear tabla con los vehículos
-            const tableHtml = crearTablaDesdeJson(vehiculos.map(v => ({
-                matricula: v.matricula || 'No disponible',
-                modelo: v.modelo || 'No disponible',
-                color: v.color || 'No disponible',
-                transitos: v.transitos ? v.transitos.length : 0,
-                montoTotal: v.transitos ? '$ ' + v.transitos.reduce((sum, t) => sum + (t.montoPagado || 0), 0).toFixed(2) : '$ 0,00'
-            })));
+            // Actualizar estadísticas
+            document.getElementById('totalVehiculos').textContent = vehiculos ? vehiculos.length : 0;
             
-            container.innerHTML = tableHtml;
+            let totalTransitos = 0;
             
-            // Cargar tránsitos para todos los vehículos
-            if (vehiculos.length > 0) {
+            vehiculos?.forEach(v => {
+                totalTransitos += v.transitos ? v.transitos : 0;
+            });
+            
+            document.getElementById('totalTransitosVeh').textContent = totalTransitos;
+            document.getElementById('montoTotal').textContent = '$ 0,00';
+            
+            // Renderizar en dashboard
+            renderVehiculos('vehiculosContainerDash', vehiculos);
+            
+            // Renderizar en sección de vehículos
+            renderVehiculos('vehiculosContainer', vehiculos);
+            
+            // Cargar tránsitos
+            if (vehiculos && vehiculos.length > 0) {
                 const matriculas = vehiculos.map(v => v.matricula).filter(m => m);
                 if (matriculas.length > 0) {
                     cargarTransitos(matriculas);
@@ -342,39 +562,75 @@
             }
         }
 
+
+
+        function renderVehiculos(containerId, vehiculos) {
+            const container = document.getElementById(containerId);
+            
+            if (!vehiculos || vehiculos.length === 0) {
+                container.innerHTML = '<div class="no-data-message">No hay vehículos registrados</div>';
+                return;
+            }
+
+            let tableHtml = '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;"><thead style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;"><tr><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Matrícula</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Modelo</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Color</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Categoría</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Tránsitos</th></tr></thead><tbody>';
+            
+            vehiculos.forEach(v => {
+                const transitos = v.transitos ? v.transitos : 0;
+                tableHtml += `<tr style="border-bottom: 1px solid #bdc3c7;"><td style="padding: 12px;"><strong>${v.matricula || 'No disponible'}</strong></td><td style="padding: 12px;">${v.modelo || 'No disponible'}</td><td style="padding: 12px;">${v.color || 'No disponible'}</td><td style="padding: 12px;">${v.categoria || 'No disponible'}</td><td style="padding: 12px;">${transitos}</td></tr>`;
+            });
+            
+            tableHtml += '</tbody></table>';
+            container.innerHTML = tableHtml;
+        }
+
         function cargarTransitos(matriculas) {
             if (!matriculas || matriculas.length === 0) {
-                document.getElementById('transitosContainer').innerHTML = 
-                    '<div class="no-data-message">No hay vehículos para mostrar tránsitos</div>';
+                document.getElementById('transitosContainerDash').innerHTML = '<div class="no-data-message">No hay vehículos</div>';
                 return;
             }
             
-            // Construir la URL con los parámetros de matrícula
             const params = matriculas.map(m => 'matriculas=' + encodeURIComponent(m)).join('&');
             submit('/vehiculos/obtenerTransitosporVehiculo?' + params);
         }
 
-        function mostrar_1(transitos) { // Esta es la respuesta del endpoint de tránsitos
-            const container = document.getElementById('transitosContainer');
+        function mostrar_transitos(transitos) {
+            transitosUsuario = transitos || [];
+            
+            // Actualizar estadísticas del dashboard
+            document.getElementById('totalTransitos').textContent = transitos ? transitos.length : 0;
+            
+            // Renderizar en dashboard (últimos 5)
+            const ultimosTransitos = transitos ? transitos.slice(0, 5) : [];
+            renderTransitos('transitosContainerDash', ultimosTransitos);
+            
+            // Renderizar en sección de tránsitos (todos)
+            renderTransitos('transitosContainer', transitos);
+        }
+
+        function mostrar_1(transitos) {
+            mostrar_transitos(transitos);
+        }
+
+        function renderTransitos(containerId, transitos) {
+            const container = document.getElementById(containerId);
             
             if (!transitos || transitos.length === 0) {
                 container.innerHTML = '<div class="no-data-message">No hay tránsitos realizados</div>';
                 return;
             }
 
-            // Crear tabla con los tránsitos
-            const tableHtml = crearTablaDesdeJson(transitos.map(t => ({
-                puesto: t.puestoPeaje?.nombre || 'No disponible',
-                matricula: t.vehiculo?.matricula || 'No disponible',
-                categoria: t.vehiculo?.categoria?.nombre || 'No disponible',
-                montoTarifa: t.tarifa ? '$ ' + t.tarifa.toFixed(2) : '$ 0,00',
-                bonificacion: t.bonificacion?.tipoDescuento || 'Sin bonificación',
-                montoBonificacion: t.descuento ? '-$ ' + t.descuento.toFixed(2) : '$ 0,00',
-                montoPagado: '$ ' + (t.montoPagado || 0).toFixed(2),
-                fecha: t.fechaTransito || 'No disponible',
-                hora: t.horaTransito || 'No disponible'
-            })));
+            let tableHtml = '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;"><thead style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;"><tr><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Fecha</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Puesto</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Vehículo</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Tarifa</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Descuento</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Total Pagado</th></tr></thead><tbody>';
             
+            transitos.forEach(t => {
+                const fecha = t.fechaTransito ? new Date(t.fechaTransito).toLocaleDateString('es-UY') : 'N/A';
+                const tarifa = (t.tarifa || 0).toFixed(2);
+                const descuento = (t.descuento || 0).toFixed(2);
+                const montoPagado = (t.montoPagado || 0).toFixed(2);
+                
+                tableHtml += `<tr style="border-bottom: 1px solid #bdc3c7;"><td style="padding: 12px;">${fecha}</td><td style="padding: 12px;">${t.puestoPeaje?.nombre || 'N/A'}</td><td style="padding: 12px;">${t.vehiculo?.matricula || 'N/A'}</td><td style="padding: 12px;">$ ${tarifa}</td><td style="padding: 12px; color: #27ae60; font-weight: 600;">-$ ${descuento}</td><td style="padding: 12px; font-weight: 600;">$ ${montoPagado}</td></tr>`;
+            });
+            
+            tableHtml += '</tbody></table>';
             container.innerHTML = tableHtml;
         }
 
@@ -386,40 +642,25 @@
                 return;
             }
 
-            // Crear tabla con las notificaciones
-            const tableHtml = crearTablaDesdeJson(notificaciones.map(n => ({
-                mensaje: n.mensaje || 'Sin mensaje',
-                fecha: n.fechaNotificacion || 'No disponible',
-                tipo: n.tipoNotificacion || 'General'
-            })));
-            
-            container.innerHTML = tableHtml;
-        }
-
-        function cerrarSesion() {
-            submit('/acceso/logout', null);
-        }
-
-        function borrarNotificaciones() {
-            mostrarConfirmacion(
-                "¿Está seguro que desea borrar todas las notificaciones?",
-                "Sí, borrar",
-                "Cancelar"
-            ).then((respuesta) => {
-                if (respuesta) {
-                    // Aquí se podría implementar la funcionalidad de borrar notificaciones
-                    // Por ahora solo limpiamos visualmente
-                    document.getElementById('notificacionesContainer').innerHTML = 
-                        '<div class="no-data-message">No hay notificaciones</div>';
-                    mostrarMensaje("Notificaciones borradas correctamente");
-                }
+            let html = '';
+            notificaciones.forEach(n => {
+                const fecha = n.fechaNotificacion ? new Date(n.fechaNotificacion).toLocaleString('es-UY') : 'Hace poco';
+                html += `<div style="padding: 15px; margin: 10px 0; border-radius: 6px; border-left: 4px solid #3498db; background: #d6eaf8;">
+                    <div style="font-weight: 600; margin-bottom: 5px;">${n.tipoNotificacion || 'Notificación'}</div>
+                    <div style="margin-bottom: 5px;">${n.mensaje || 'Sin mensaje'}</div>
+                    <div style="font-size: 0.85em; color: #7f8c8d;">${fecha}</div>
+                </div>`;
             });
+
+            container.innerHTML = html;
+        }
+
+        function logout() {
+            submit('/acceso/logout', null);
         }
 
         function procesarErrorSubmit(status, text) {
             console.error('Error en submit:', status, text);
-            document.getElementById('mensajes').innerHTML = 
-                '<p class="error">⚠️ Error de conexión. Intente nuevamente.</p>';
         }
     </script>
 </body>

@@ -5,8 +5,10 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import obligatorioAraujoSolari.observer.Observable;
+import obligatorioAraujoSolari.observer.Observador;
 
-public class Vehiculo {
+public class Vehiculo extends Observable{
 
     //REVISAR SETTERS DE ATRIBUTOS INMUTABLES. 
     @Getter
@@ -52,4 +54,8 @@ public class Vehiculo {
         return cantidad;
     }
 
+    public void agregarTransito(Transito transito) {
+        this.transitos.add(transito);
+        notificar(Observador.Evento.TRANSITO_ACTUALIZADO);
+    }
 }

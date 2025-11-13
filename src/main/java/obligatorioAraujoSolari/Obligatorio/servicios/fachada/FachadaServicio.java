@@ -120,6 +120,10 @@ public class FachadaServicio {
     public List<Tarifa> getTarifas() {
         return servicioPeajes.getTarifas();
     }
+
+    public Tarifa getTarifaPorCategoriaYPuesto(CategoriaVehiculo categoria, PuestoPeaje puestoPeaje) throws PeajeException {
+        return servicioPeajes.getTarifaPorCategoriaYPuesto(categoria, puestoPeaje);
+    }
     
     /* <--------- Servicios de Vehiculos ---------> */
     
@@ -148,5 +152,13 @@ public class FachadaServicio {
     
     public List<Transito> obtenerTransitosPorVehiculo(Vehiculo vehiculo) throws PeajeException {
         return servicioTransito.obtenerTransitosPorVehiculo(vehiculo);
+    }
+
+    public void registrarTransito(Transito transito) throws PeajeException {
+        servicioTransito.registrarTransito(transito);
+    }
+
+    public Bonificacion obtenerBonificacionAplicable(Vehiculo vehiculo, PuestoPeaje puestoPeaje) {
+        return servicioTransito.obtenerBonificacionAplicable(vehiculo, puestoPeaje);
     }
 }

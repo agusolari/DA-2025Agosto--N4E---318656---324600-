@@ -3,6 +3,7 @@ package obligatorioAraujoSolari.Obligatorio.servicios;
 import java.util.ArrayList;
 import java.util.List;
 
+import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
 import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
@@ -39,5 +40,14 @@ public class ServicioPeajes {
 
     public List<Tarifa> getTarifas() {
         return tarifas;
+    }
+
+    public Tarifa getTarifaPorCategoriaYPuesto(CategoriaVehiculo categoria, PuestoPeaje puestoPeaje) throws PeajeException {
+        for (Tarifa tarifa : tarifas) {
+            if (tarifa.getCategoriasVehiculos().contains(categoria) && tarifa.getPuestoPeaje().equals(puestoPeaje)) {
+                return tarifa;
+            }
+        }
+        throw new PeajeException("No existe una tarifa para la categoría " + categoria.getNombre() + " en el puesto " + puestoPeaje.getNombre() + ".");
     }
 }

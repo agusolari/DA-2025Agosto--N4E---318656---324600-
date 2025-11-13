@@ -13,11 +13,11 @@ public class BonificacionTrabajadores extends Bonificacion {
     }
 
     @Override
-    protected double calcularDescuento() {
+    protected double calcularDescuento(Transito transito) {
         // Verificar si el puesto de peaje del tránsito coincide con el puesto asignado al propietario
-        boolean esPuestoAsignado = getTransito().getPuestoPeaje().equals(getPuestoPeaje());
+        boolean esPuestoAsignado = transito.getPuestoPeaje().equals(getPuestoPeaje());
         // Verificar si el día del tránsito es un día de semana (lunes a viernes)
-        boolean esDiaSemana = getTransito().esDiaSemana();
+        boolean esDiaSemana = transito.esDiaSemana();
 
         if(esPuestoAsignado && esDiaSemana) {
             return 0.8;

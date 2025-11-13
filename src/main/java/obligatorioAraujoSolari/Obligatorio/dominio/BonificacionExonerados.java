@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public class BonificacionExonerados extends Bonificacion {
 
-
     public BonificacionExonerados(Propietario propietario, PuestoPeaje puestoPeaje, LocalDate fechaAsignacion) {
         super("Exonerado", "No pagan el tránsito en un determinado puesto.", propietario, puestoPeaje, fechaAsignacion);
     }
@@ -14,7 +13,7 @@ public class BonificacionExonerados extends Bonificacion {
     }
 
     @Override
-    protected double calcularDescuento() {
+    protected double calcularDescuento(Transito transito) {
         return 1;
     }
 

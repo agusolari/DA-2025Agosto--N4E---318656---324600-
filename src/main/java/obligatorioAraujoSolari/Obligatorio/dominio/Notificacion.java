@@ -19,9 +19,8 @@ public class Notificacion {
     @Setter
     private Propietario propietario;
 
-    public Notificacion(LocalDateTime fechaHora, String mensaje, Transito transito, Propietario propietario) {
+    public Notificacion(LocalDateTime fechaHora, Transito transito, Propietario propietario) {
         this.fechaHora = fechaHora;
-        this.mensaje = mensaje;
         this.transito = transito;
         this.propietario = propietario;
     }

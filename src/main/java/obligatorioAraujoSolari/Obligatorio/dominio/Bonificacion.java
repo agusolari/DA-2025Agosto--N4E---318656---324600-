@@ -18,9 +18,6 @@ public abstract class Bonificacion {
     private PuestoPeaje puestoPeaje;
     @Getter
     @Setter
-    private Transito transito;
-    @Getter
-    @Setter
     private String descripcion;
     @Getter
     @Setter
@@ -41,5 +38,5 @@ public abstract class Bonificacion {
         this.puestoPeaje = puestoPeaje;
         this.fechaAsignacion = fechaAsignacion;
     }
-    protected abstract double calcularDescuento();
+    protected abstract double calcularDescuento(Transito transito);
 }

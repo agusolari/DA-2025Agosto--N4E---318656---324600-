@@ -13,6 +13,10 @@ import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionFrecuentes;
 import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionTrabajadores;
 import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
 import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
+import obligatorioAraujoSolari.Obligatorio.dominio.EstadoDeshabilitado;
+import obligatorioAraujoSolari.Obligatorio.dominio.EstadoHabilitado;
+import obligatorioAraujoSolari.Obligatorio.dominio.EstadoPenalizado;
+import obligatorioAraujoSolari.Obligatorio.dominio.EstadoSuspendido;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
 import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
@@ -172,10 +176,10 @@ public class ObligatorioApplication {
 			propietario2.agregarBonificacion(bonificacion4);
 
 			// Creacion de estados
-			FachadaServicio.getInstancia().agregarEstado(new Estado("Habilitado", "Es el estado por defecto de los propietarios cuando se dan de alta en el sistema. El propietario tiene todas las funcionalidades habilitadas."));
-			FachadaServicio.getInstancia().agregarEstado(new Estado("Deshabilitado", "El usuario no puede ingresar al sistema ni puede realizar tránsitos. Tampoco se le pueden asignar bonificaciones."));
-			FachadaServicio.getInstancia().agregarEstado(new Estado("Suspendido", "El usuario puede ingresar al sistema, pero no puede realizar tránsitos."));
-			FachadaServicio.getInstancia().agregarEstado(new Estado("Penalizado", "El usuario puede ingresar al sistema, pero no se le registran notificaciones. Puede realizar tránsitos, pero no aplican las bonificaciones que tenga asignadas. "));
+			FachadaServicio.getInstancia().agregarEstado(new EstadoHabilitado());
+			FachadaServicio.getInstancia().agregarEstado(new EstadoDeshabilitado());
+			FachadaServicio.getInstancia().agregarEstado(new EstadoSuspendido());
+			FachadaServicio.getInstancia().agregarEstado(new EstadoPenalizado());
 		}
 		catch(PeajeException e){
 			System.out.println("Error cargando datos de prueba: " + e.getMessage());
@@ -184,7 +188,3 @@ public class ObligatorioApplication {
 	}
 
 }
-
-
-//TODO: POR HACER MANANA: -Agregar en la precarga de datos, en las listas de cada clase 
-// correspondiente y no solo en las listas de los sistemas.

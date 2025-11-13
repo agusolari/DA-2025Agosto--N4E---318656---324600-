@@ -36,8 +36,7 @@ public class Propietario extends Usuario {
         this.vehiculos = new ArrayList<Vehiculo>();
         this.notificaciones = new ArrayList<Notificacion>();
         this.bonificaciones = new ArrayList<Bonificacion>();
-        this.estado = new Estado("HABILITADO", "Es el estado por defecto de los propietarios cuando se dan de alta en el\n" + //
-                        "sistema. El propietario tiene todas las funcionalidades habilitadas.");
+        this.estado = new EstadoHabilitado();
         this.saldo = saldo;
         this.saldoMinimoAlerta = 500;
     }
@@ -47,7 +46,15 @@ public class Propietario extends Usuario {
     }
 
     public void agregarNotificacion(Notificacion notificacion) {
-        this.notificaciones.add(notificacion);
+        if (estado.puedeRegistrarNotificacion()) {
+            if (saldo > saldoMinimoAlerta) {
+                notificacion.setMensaje(notificacion.getFechaHora().toString() + " Pasaste por el puesto " + notificacion.getTransito().getPuestoPeaje().getNombre() + " con el vehículo " + notificacion.getTransito().getVehiculo().getMatricula() + ".");
+                this.notificaciones.add(notificacion);
+            } else {
+                notificacion.setMensaje(notificacion.getFechaHora().toString() + " Tu saldo actual es de $ " + this.saldo + " Te recomendamos hacer una recarga.");
+                this.notificaciones.add(notificacion);
+            }
+        }
     }
 
     public void agregarBonificacion(Bonificacion bonificacion) {

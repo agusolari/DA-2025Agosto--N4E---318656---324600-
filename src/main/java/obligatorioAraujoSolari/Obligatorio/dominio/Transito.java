@@ -16,20 +16,16 @@ public class Transito {
     private Tarifa tarifa;
     @Getter
     @Setter
-    private Notificacion notificacion;
-    @Getter
-    @Setter
     private Bonificacion bonificacion;
     @Getter
     @Setter
     private LocalDateTime fechaHora;
     
-    public Transito(Vehiculo vehiculo, PuestoPeaje puestoPeaje, Tarifa tarifa, Notificacion notificacion,
+    public Transito(Vehiculo vehiculo, PuestoPeaje puestoPeaje, Tarifa tarifa,
             Bonificacion bonificacion) {
         this.vehiculo = vehiculo;
         this.puestoPeaje = puestoPeaje;
         this.tarifa = tarifa;
-        this.notificacion = notificacion;
         this.bonificacion = bonificacion;
         this.fechaHora = LocalDateTime.now();
     }
@@ -59,7 +55,7 @@ public class Transito {
         double costoBase = this.tarifa.getMonto();
         double descuento = 0.0;
         if (this.bonificacion != null) {
-            descuento = this.bonificacion.calcularDescuento();
+            descuento = this.bonificacion.calcularDescuento(this);
         }
         return costoBase - (costoBase * descuento);
     }

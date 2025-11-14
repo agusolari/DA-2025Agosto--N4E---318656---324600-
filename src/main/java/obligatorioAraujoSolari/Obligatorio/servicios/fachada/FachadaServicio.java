@@ -77,6 +77,10 @@ public class FachadaServicio {
         return servicioUsuarios.obtenerPropietarioPorCedula(cedula);
     }
 
+    public List<Propietario> obtenerPropietarios() {
+        return servicioUsuarios.obtenerPropietarios();
+    }
+
     public List<Estado> getEstados() {
         return servicioUsuarios.getEstados();
     }

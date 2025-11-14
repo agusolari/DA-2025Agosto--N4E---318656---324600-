@@ -1,5 +1,6 @@
 package obligatorioAraujoSolari.Obligatorio.controladores;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
-import obligatorioAraujoSolari.dtos.EmularTransitoDto;
+import obligatorioAraujoSolari.dtos.TransitoResultadoDto;
 
 @RestController
 @RequestMapping("transito")
@@ -34,20 +35,35 @@ public class ControladorTransito {
     }
 
     @PostMapping("/emularTransito")
-    public List<Respuesta> emularTransito(@RequestParam EmularTransitoDto emularTransitoDto) throws PeajeException {
+    public List<Respuesta> emularTransito(@RequestParam String nombrePuesto, @RequestParam String matricula, @RequestParam String fechaTransito) throws PeajeException {
         try {
-            Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(emularTransitoDto.getMatricula());
-            PuestoPeaje puestoPeaje = FachadaServicio.getInstancia().getPuestoPeajePorNombre(emularTransitoDto.getNombrePuesto());
+            Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
+            PuestoPeaje puestoPeaje = FachadaServicio.getInstancia().getPuestoPeajePorNombre(nombrePuesto);
             Tarifa tarifa = FachadaServicio.getInstancia().getTarifaPorCategoriaYPuesto(vehiculo.getCategoria(), puestoPeaje);
             Bonificacion bonificacion = FachadaServicio.getInstancia().obtenerBonificacionAplicable(vehiculo, puestoPeaje);
             
             Transito nuevoTransito = new Transito(vehiculo, puestoPeaje, tarifa, bonificacion);
             FachadaServicio.getInstancia().registrarTransito(nuevoTransito);
 
-            Notificacion notificacion = new Notificacion(emularTransitoDto.getFechaTransito(), nuevoTransito ,vehiculo.getPropietario());
+            LocalDateTime fechaTransitoDT = LocalDateTime.parse(fechaTransito.replace(" ", "T"));
+            Notificacion notificacion = new Notificacion(fechaTransitoDT, nuevoTransito, vehiculo.getPropietario());
             vehiculo.getPropietario().agregarNotificacion(notificacion);
 
-            return Respuesta.lista(new Respuesta("transitoEmulado", nuevoTransito));
+            String propietarioNombre = vehiculo.getPropietario().getNombreCompleto();
+            String propietarioEstado = vehiculo.getPropietario().getEstado().getNombreEstado();
+            String vehiculoMatricula = vehiculo.getMatricula();
+            String vehiculoCategoria = vehiculo.getCategoria().getNombre();
+            String bonificacionNombre = bonificacion != null ? bonificacion.getNombre() : "Ninguna";
+            Double tarifaOriginal = tarifa.getMonto();
+            Double tarifaConBonificacion = nuevoTransito.calcularTarifaFinal();
+            Double saldoFinal = vehiculo.getPropietario().getSaldo();
+
+            TransitoResultadoDto dto = new TransitoResultadoDto(
+                propietarioNombre, propietarioEstado, vehiculoMatricula, vehiculoCategoria,
+                bonificacionNombre, tarifaOriginal, tarifaConBonificacion, saldoFinal
+            );
+
+            return Respuesta.lista(new Respuesta("emularTransito", dto));
         } catch (Exception e) {
             throw new PeajeException("Error al emular tránsito: " + e.getMessage());
         }

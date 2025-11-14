@@ -93,6 +93,10 @@ public class ServicioUsuarios {
         throw new PeajeException("No se encontró un propietario con la cédula indicada.");
     }
 
+    public List<Propietario> obtenerPropietarios() {
+        return new ArrayList<>(propietarios);
+    }
+
     public List<Estado> getEstados() {
         return estados;
     }

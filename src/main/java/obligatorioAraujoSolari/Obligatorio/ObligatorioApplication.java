@@ -7,12 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
-import obligatorioAraujoSolari.Obligatorio.dominio.Bonificacion;
 import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionExonerados;
 import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionFrecuentes;
 import obligatorioAraujoSolari.Obligatorio.dominio.BonificacionTrabajadores;
 import obligatorioAraujoSolari.Obligatorio.dominio.CategoriaVehiculo;
-import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
 import obligatorioAraujoSolari.Obligatorio.dominio.EstadoDeshabilitado;
 import obligatorioAraujoSolari.Obligatorio.dominio.EstadoHabilitado;
 import obligatorioAraujoSolari.Obligatorio.dominio.EstadoPenalizado;

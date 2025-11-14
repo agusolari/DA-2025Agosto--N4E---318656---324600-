@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar Estado de Propietarios - Sistema de Peajes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script src="vistaWeb.js"></script>
+</head>
+<body>
+    <script src="utilesVista.js"></script>
+    
+    <div class="admin-container">
+        <div class="admin-card">
+            <div class="admin-header">
+                <div class="header-icon">👥</div>
+                <div>
+                    <h1>Cambiar Estado de Propietarios</h1>
+                    <p class="header-subtitle">Modifique el estado de los propietarios del sistema (Habilitado, Penalizado, Suspendido, Deshabilitado).</p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cedulaPropietario">Cédula del Propietario</label>
+                        <input type="text" id="cedulaPropietario" placeholder="Ej: 12345678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nuevoEstado">Nuevo Estado</label>
+                        <select id="nuevoEstado">
+                            <option value="">Seleccione un estado...</option>
+                            <option value="habilitado">Habilitado</option>
+                            <option value="penalizado">Penalizado</option>
+                            <option value="suspendido">Suspendido</option>
+                            <option value="deshabilitado">Deshabilitado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="motivo">Motivo del Cambio (opcional)</label>
+                        <input type="text" id="motivo" placeholder="Especifique el motivo...">
+                    </div>
+                </div>
+
+                <button class="btn-accion" onclick="cambiarEstado()">Cambiar Estado</button>
+                <button class="btn-volver" onclick="volverAlTablero()">Volver al Panel</button>
+            </div>
+
+            <div id="mensajeResultado" class="mensaje-resultado" style="display: none;"></div>
+
+            <div class="propietarios-section">
+                <h3>Propietarios en el Sistema</h3>
+                <div id="propietariosContainer" class="propietarios-container">
+                    <p class="placeholder">Cargando propietarios...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        urlIniciarVista = "/administrador/cargarVistaCambioEstado";
+        
+        function primerSubmitFinalizado() {
+            cargarPropietarios();
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+        });
+
+        function cargarPropietarios() {
+            submit('/administrador/obtenerPropietarios');
+        }
+
+        function mostrar_propietariosLista(propietarios) {
+            const container = document.getElementById('propietariosContainer');
+            
+            if (!propietarios || propietarios.length === 0) {
+                container.innerHTML = '<p class="placeholder">No hay propietarios en el sistema</p>';
+                return;
+            }
+
+            let html = '<table class="tabla-admin"><thead><tr><th>Cédula</th><th>Nombre</th><th>Estado Actual</th><th>Saldo</th><th>Acciones</th></tr></thead><tbody>';
+            
+            propietarios.forEach(p => {
+                const estadoColor = getEstadoColor(p.estado);
+                html += `<tr>
+                    <td>${p.cedula || 'N/A'}</td>
+                    <td>${p.nombreCompleto || 'N/A'}</td>
+                    <td><span class="estado-badge ${estadoColor}">${p.estado || 'N/A'}</span></td>
+                    <td>$ ${(p.saldo || 0).toFixed(2)}</td>
+                    <td>
+                        <select onchange="cambiarEstadoDirecto('${p.cedula}', this.value)" class="select-inline">
+                            <option value="">-- Cambiar a --</option>
+                            <option value="habilitado">Habilitado</option>
+                            <option value="penalizado">Penalizado</option>
+                            <option value="suspendido">Suspendido</option>
+                            <option value="deshabilitado">Deshabilitado</option>
+                        </select>
+                    </td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function getEstadoColor(estado) {
+            switch(estado?.toLowerCase()) {
+                case 'habilitado':
+                    return 'estado-habilitado';
+                case 'penalizado':
+                    return 'estado-penalizado';
+                case 'suspendido':
+                    return 'estado-suspendido';
+                case 'deshabilitado':
+                    return 'estado-deshabilitado';
+                default:
+                    return '';
+            }
+        }
+
+        function cambiarEstado() {
+            const cedula = document.getElementById('cedulaPropietario').value;
+            const nuevoEstado = document.getElementById('nuevoEstado').value;
+            const motivo = document.getElementById('motivo').value;
+
+            if (!cedula || !nuevoEstado) {
+                mostrarMensaje('Por favor complete los campos requeridos', 'error');
+                return;
+            }
+
+            const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}&motivo=${encodeURIComponent(motivo)}`;
+            submit('/administrador/cambiarEstadoPropietario?' + params);
+        }
+
+        function cambiarEstadoDirecto(cedula, nuevoEstado) {
+            if (!nuevoEstado) return;
+            
+            const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}&motivo=Cambio realizado desde tabla`;
+            submit('/administrador/cambiarEstadoPropietario?' + params);
+        }
+
+        function mostrar_estadoCambiado(resultado) {
+            mostrarMensaje('Estado del propietario actualizado correctamente', 'exito');
+            document.getElementById('cedulaPropietario').value = '';
+            document.getElementById('nuevoEstado').value = '';
+            document.getElementById('motivo').value = '';
+            
+            setTimeout(() => {
+                cargarPropietarios();
+            }, 1000);
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const div = document.getElementById('mensajeResultado');
+            div.textContent = texto;
+            div.className = 'mensaje-resultado ' + tipo;
+            div.style.display = 'block';
+            
+            setTimeout(() => {
+                div.style.display = 'none';
+            }, 5000);
+        }
+
+        function volverAlTablero() {
+            window.location.href = '/tableroAdministrador.html';
+        }
+
+        function procesarErrorSubmit(status, text) {
+            console.error('Error en submit:', status, text);
+            mostrarMensaje('Error: ' + text, 'error');
+        }
+    </script>
+</body>
+</html>

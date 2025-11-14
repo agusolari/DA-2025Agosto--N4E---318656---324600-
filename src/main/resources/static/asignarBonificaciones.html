@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignar Bonificaciones - Sistema de Peajes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script src="vistaWeb.js"></script>
+</head>
+<body>
+    <script src="utilesVista.js"></script>
+    
+    <div class="admin-container">
+        <div class="admin-card">
+            <div class="admin-header">
+                <div class="header-icon">🎁</div>
+                <div>
+                    <h1>Asignar Bonificaciones</h1>
+                    <p class="header-subtitle">Gestione las bonificaciones de los propietarios del sistema.</p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cedulaPropietario">Cédula del Propietario</label>
+                        <input type="text" id="cedulaPropietario" placeholder="Ej: 12345678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoBonificacion">Tipo de Bonificación</label>
+                        <select id="tipoBonificacion">
+                            <option value="">Seleccione un tipo...</option>
+                            <option value="trabajadores">Trabajadores</option>
+                            <option value="frecuentes">Frecuentes</option>
+                            <option value="exonerados">Exonerados</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="puestoPeaje">Puesto de Peaje</label>
+                        <select id="puestoPeaje">
+                            <option value="">Seleccione un puesto...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-accion" onclick="asignarBonificacion()">Asignar Bonificación</button>
+                <button class="btn-volver" onclick="volverAlTablero()">Volver al Panel</button>
+            </div>
+
+            <div id="mensajeResultado" class="mensaje-resultado" style="display: none;"></div>
+
+            <div class="bonificaciones-section">
+                <h3>Bonificaciones Activas</h3>
+                <div id="bonificacionesContainer" class="bonificaciones-container">
+                    <p class="placeholder">Cargando bonificaciones...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        urlIniciarVista = "/administrador/cargarVistaBonificaciones";
+        
+        function primerSubmitFinalizado() {
+            cargarPuestos();
+            cargarBonificaciones();
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+        });
+
+        function cargarPuestos() {
+            submit('/puestoPeaje/obtenerPuestos');
+        }
+
+        function mostrar_puestosPeaje(puestos) {
+            const select = document.getElementById('puestoPeaje');
+            select.innerHTML = '<option value="">Seleccione un puesto...</option>';
+            
+            puestos.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.nombre;
+                option.textContent = p.nombre + ' - ' + p.ubicacion;
+                select.appendChild(option);
+            });
+        }
+
+        function cargarBonificaciones() {
+            submit('/administrador/obtenerBonificaciones');
+        }
+
+        function mostrar_bonificacionesActivas(bonificaciones) {
+            const container = document.getElementById('bonificacionesContainer');
+            
+            if (!bonificaciones || bonificaciones.length === 0) {
+                container.innerHTML = '<p class="placeholder">No hay bonificaciones activas</p>';
+                return;
+            }
+
+            let html = '<table class="tabla-admin"><thead><tr><th>Propietario</th><th>Tipo</th><th>Puesto</th><th>Fecha Asignación</th><th>Acciones</th></tr></thead><tbody>';
+            
+            bonificaciones.forEach(b => {
+                const fecha = b.fechaAsignacion ? new Date(b.fechaAsignacion).toLocaleDateString('es-UY') : 'N/A';
+                html += `<tr>
+                    <td>${b.propietarioNombre || 'N/A'}</td>
+                    <td>${b.nombre || 'N/A'}</td>
+                    <td>${b.puestoPeaje || 'N/A'}</td>
+                    <td>${fecha}</td>
+                    <td><button class="btn-eliminar" onclick="eliminarBonificacion('${b.id}')">Eliminar</button></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function asignarBonificacion() {
+            const cedula = document.getElementById('cedulaPropietario').value;
+            const tipoBonificacion = document.getElementById('tipoBonificacion').value;
+            const puestoPeaje = document.getElementById('puestoPeaje').value;
+
+            if (!cedula || !tipoBonificacion || !puestoPeaje) {
+                mostrarMensaje('Por favor complete todos los campos', 'error');
+                return;
+            }
+
+            const params = `cedula=${encodeURIComponent(cedula)}&tipo=${encodeURIComponent(tipoBonificacion)}&puestoPeaje=${encodeURIComponent(puestoPeaje)}`;
+            submit('/administrador/asignarBonificacion?' + params);
+        }
+
+        function mostrar_bonificacionAsignada(resultado) {
+            mostrarMensaje('Bonificación asignada exitosamente', 'exito');
+            document.getElementById('cedulaPropietario').value = '';
+            document.getElementById('tipoBonificacion').value = '';
+            document.getElementById('puestoPeaje').value = '';
+            
+            setTimeout(() => {
+                cargarBonificaciones();
+            }, 1000);
+        }
+
+        function eliminarBonificacion(id) {
+            if (confirm('¿Está seguro de que desea eliminar esta bonificación?')) {
+                submit('/administrador/eliminarBonificacion?id=' + id);
+            }
+        }
+
+        function mostrar_bonificacionEliminada(resultado) {
+            mostrarMensaje('Bonificación eliminada correctamente', 'exito');
+            cargarBonificaciones();
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const div = document.getElementById('mensajeResultado');
+            div.textContent = texto;
+            div.className = 'mensaje-resultado ' + tipo;
+            div.style.display = 'block';
+            
+            setTimeout(() => {
+                div.style.display = 'none';
+            }, 5000);
+        }
+
+        function volverAlTablero() {
+            window.location.href = '/tableroAdministrador.html';
+        }
+
+        function procesarErrorSubmit(status, text) {
+            console.error('Error en submit:', status, text);
+            mostrarMensaje('Error: ' + text, 'error');
+        }
+    </script>
+</body>
+</html>

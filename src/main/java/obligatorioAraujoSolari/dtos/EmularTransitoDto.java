@@ -16,6 +16,8 @@ public class EmularTransitoDto {
     @Setter
     private LocalDateTime fechaTransito;
 
+    public EmularTransitoDto() {}
+
     public EmularTransitoDto(String nombrePuesto, String matricula, LocalDateTime fechaTransito) {
         this.nombrePuesto = nombrePuesto;
         this.matricula = matricula;

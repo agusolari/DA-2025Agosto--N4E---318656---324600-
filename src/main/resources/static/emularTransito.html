@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emular Tránsito - Sistema de Peajes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script src="vistaWeb.js"></script>
+</head>
+<body>
+    <script src="utilesVista.js"></script>
+    
+    <div class="emular-transito-container">
+        <div class="emular-transito-card">
+            <div class="emular-transito-header">
+                <div class="header-icon">📋</div>
+                <div>
+                    <h1>Emular tránsito</h1>
+                    <p class="header-subtitle">Seleccione un puesto, verifique sus tarifas, ingrese una matrícula y emule un tránsito.</p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="puestoPeaje">Puesto</label>
+                        <select id="puestoPeaje" onchange="cargarTarifas()">
+                            <option value="">Seleccione un puesto...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="matricula">Matrícula</label>
+                        <input type="text" id="matricula" placeholder="Ej: ABC1234">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fechaTransito">Fecha y hora del tránsito</label>
+                        <input type="datetime-local" id="fechaTransito" placeholder="Ej: 2025-11-19 15:30">
+                    </div>
+                </div>
+
+                <button class="btn-emular" onclick="emularTransito()">Emular tránsito</button>
+            </div>
+
+            <div class="tarifas-section">
+                <h3>Tarifas del puesto</h3>
+                <div id="tarifasContainer" class="tarifas-container">
+                    <p class="tarifas-placeholder">Seleccione un puesto para ver las tarifas disponibles.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado del Tránsito -->
+        <div id="resultadoContainer" class="resultado-container" style="display: none;">
+            <div class="resultado-card">
+                <h2>Resultado</h2>
+                
+                <div class="resultado-row">
+                    <span class="resultado-label">Propietario:</span>
+                    <span class="resultado-value" id="resultadoPropietario">-</span>
+                </div>
+
+                <div class="resultado-row">
+                    <span class="resultado-label">Categoría:</span>
+                    <span class="resultado-value" id="resultadoCategoria">-</span>
+                </div>
+
+                <div class="resultado-row">
+                    <span class="resultado-label">Bonificación:</span>
+                    <span class="resultado-value" id="resultadoBonificacion">-</span>
+                </div>
+
+                <div class="resultado-row">
+                    <span class="resultado-label">Costo del tránsito:</span>
+                    <span class="resultado-value" id="resultadoCosto">-</span>
+                </div>
+
+                <div class="resultado-row resultado-total">
+                    <span class="resultado-label">Saldo luego del tránsito:</span>
+                    <span class="resultado-value" id="resultadoSaldo">-</span>
+                </div>
+            </div>
+
+            <footer class="emular-transito-footer">
+                © 2025 - Emular tránsito
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        urlIniciarVista = "/transito/cargarVista";
+        let puestosDisponibles = [];
+        let tarifasActuales = [];
+
+        function primerSubmitFinalizado() {
+            cargarPuestos();
+        }
+
+        // Cargar puestos al iniciar
+        window.addEventListener('DOMContentLoaded', function() {
+            setFechaActual();
+        });
+
+        function setFechaActual() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('fechaTransito').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function cargarPuestos() {
+            submit('/puestoPeaje/obtenerPuestos');
+        }
+
+        function mostrar_puestosPeaje(puestos) {
+            puestosDisponibles = puestos || [];
+            const select = document.getElementById('puestoPeaje');
+            select.innerHTML = '<option value="">Seleccione un puesto...</option>';
+            
+            puestos.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.nombre;
+                option.textContent = p.nombre + ' - ' + p.ubicacion;
+                select.appendChild(option);
+            });
+        }
+
+        function cargarTarifas() {
+            const nombrePuesto = document.getElementById('puestoPeaje').value;
+            if (!nombrePuesto) {
+                document.getElementById('tarifasContainer').innerHTML = '<p class="tarifas-placeholder">Seleccione un puesto para ver las tarifas disponibles.</p>';
+                return;
+            }
+            
+            submit('/puestoPeaje/obtenerTarifasPorPuesto?nombrePuesto=' + encodeURIComponent(nombrePuesto));
+        }
+
+        function mostrar_tarifas(tarifas) {
+            tarifasActuales = tarifas || [];
+            const container = document.getElementById('tarifasContainer');
+            
+            if (!tarifas || tarifas.length === 0) {
+                container.innerHTML = '<p class="tarifas-placeholder">No hay tarifas disponibles para este puesto.</p>';
+                return;
+            }
+
+            let html = '<table class="tarifas-table"><thead><tr><th>Categoría</th><th>Monto</th></tr></thead><tbody>';
+            
+            tarifas.forEach(t => {
+                const categorias = t.categoriasVehiculos ? t.categoriasVehiculos.map(c => c.nombre).join(', ') : 'N/A';
+                html += `<tr><td>${categorias}</td><td>$ ${t.monto.toFixed(2)}</td></tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function emularTransito() {
+            const nombrePuesto = document.getElementById('puestoPeaje').value;
+            const matricula = document.getElementById('matricula').value;
+            const fechaStr = document.getElementById('fechaTransito').value;
+
+            if (!nombrePuesto || !matricula || !fechaStr) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+
+            const fecha = fechaStr.replace('T', ' ');
+            const params = `nombrePuesto=${encodeURIComponent(nombrePuesto)}&matricula=${encodeURIComponent(matricula)}&fechaTransito=${encodeURIComponent(fecha)}`;
+            submit('/transito/emularTransito?' + params);
+        }
+
+        function mostrar_emularTransito(resultado) {
+            if (!resultado) {
+                alert('Error al emular el tránsito');
+                return;
+            }
+
+            document.getElementById('resultadoPropietario').textContent = resultado.propietarioNombre + ' (' + resultado.propietarioEstado + ')';
+            document.getElementById('resultadoCategoria').textContent = resultado.vehiculoCategoria;
+            document.getElementById('resultadoBonificacion').textContent = resultado.bonificacionNombre;
+            document.getElementById('resultadoCosto').textContent = '$ ' + resultado.tarifaConBonificacion.toFixed(2);
+            document.getElementById('resultadoSaldo').textContent = '$ ' + resultado.saldoFinal.toFixed(2);
+
+            document.getElementById('resultadoContainer').style.display = 'block';
+        }
+
+        function procesarErrorSubmit(status, text) {
+            console.error('Error en submit:', status, text);
+            alert('Error: ' + text);
+        }
+    </script>
+</body>
+</html>

@@ -11,10 +11,9 @@
 <body>
     <h1>⚙️ Panel de Administración</h1>
     <div id="menuOpciones">
-        <button onclick="irA('/administrador/gestionPropietarios')">👥 Gestión de Propietarios</button>
-        <button onclick="irA('/administrador/gestionPeajes')">🛣️ Gestión de Peajes</button>
-        <button onclick="irA('/administrador/gestionTarifas')">💰 Gestión de Tarifas</button>
-        <button onclick="irA('/administrador/reportes')">📊 Reportes</button>
+        <button onclick="irA('emularTransito.html')">📋 Emular Tránsito</button>
+        <button onclick="irA('asignarBonificaciones.html')">🎁 Asignar Bonificaciones</button>
+        <button onclick="irA('cambiarEstadoPropietarios.html')">👥 Cambiar Estado de Propietarios</button>
         <button onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
     </div>
 
@@ -22,10 +21,11 @@
 
     <script>
         function cerrarSesion() {
-            fetch('/sesion/cerrar', { method: 'POST' })
-                .then(() => {
-                    window.location.href = '/index.html';
-                });
+            submit('/acceso/logout');
+        }
+
+        function mostrar_usuarioNoAutenticado(urlDestino) {
+            window.location.href = urlDestino;
         }
 
         function irA(ruta) {

@@ -1,15 +1,13 @@
 package obligatorioAraujoSolari.dtos;
 
-import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
-
 public class PropietarioDto {
     private String nombreCompleto;
-    private Estado estado;
+    private String estadoNombre;
     private double saldo;
 
-    public PropietarioDto(String nombreCompleto, Estado estado, double saldo) {
+    public PropietarioDto(String nombreCompleto, String estadoNombre, double saldo) {
         this.nombreCompleto = nombreCompleto;
-        this.estado = estado;
+        this.estadoNombre = estadoNombre;
         this.saldo = saldo;
     }
 
@@ -17,8 +15,8 @@ public class PropietarioDto {
         return nombreCompleto;
     }
 
-    public Estado getEstado() {
-        return estado;
+    public String getEstadoNombre() {
+        return estadoNombre;
     }
 
     public double getSaldo() {

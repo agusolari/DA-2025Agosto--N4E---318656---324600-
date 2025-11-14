@@ -42,7 +42,8 @@
                     </div>
                 </div>
 
-                <button class="btn-emular" onclick="emularTransito()">Emular tránsito</button>
+                <button class="btn-accion" onclick="emularTransito()">Emular tránsito</button>
+                <button class="btn-volver" onclick="volverAlTablero()">← Volver al Panel</button>
             </div>
 
             <div class="tarifas-section">
@@ -91,6 +92,8 @@
     </div>
 
     <script>
+        //TODO: VER SI SE PUEDE ARREGLAR PARA QUE NI SIQUIERA MUESTRE NADA ANTES DE MANDARLO PARA ATRAS CUANDO NO ESTA
+        //AUTENTICADO.
         urlIniciarVista = "/transito/cargarVista";
         let puestosDisponibles = [];
         let tarifasActuales = [];
@@ -192,9 +195,16 @@
             document.getElementById('resultadoContainer').style.display = 'block';
         }
 
+        function mostrar_usuarioNoAutenticado(urlDestino) {
+            window.location.href = urlDestino;
+        }
+
+        function volverAlTablero() {
+            window.location.href = 'tableroAdministrador.html';
+        }
+
         function procesarErrorSubmit(status, text) {
             console.error('Error en submit:', status, text);
-            alert('Error: ' + text);
         }
     </script>
 </body>

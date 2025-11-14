@@ -169,9 +169,12 @@
             window.location.href = '/tableroAdministrador.html';
         }
 
+        function mostrar_usuarioNoAutenticado(urlDestino) {
+            window.location.href = urlDestino;
+        }
+
         function procesarErrorSubmit(status, text) {
             console.error('Error en submit:', status, text);
-            mostrarMensaje('Error: ' + text, 'error');
         }
     </script>
 </body>

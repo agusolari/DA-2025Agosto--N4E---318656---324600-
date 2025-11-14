@@ -29,7 +29,8 @@ public class ControladorPropietario {
             throw new PeajeException("Propietario no encontrado");
         }
 
-        PropietarioDto dto = new PropietarioDto(propietario.getNombreCompleto(), propietario.getEstado(), propietario.getSaldo());
+        String estadoNombre = propietario.getEstado() != null ? propietario.getEstado().getNombreEstado() : "No disponible";
+        PropietarioDto dto = new PropietarioDto(propietario.getNombreCompleto(), estadoNombre, propietario.getSaldo());
         return Respuesta.lista(new Respuesta("propietario", dto));
     }
 

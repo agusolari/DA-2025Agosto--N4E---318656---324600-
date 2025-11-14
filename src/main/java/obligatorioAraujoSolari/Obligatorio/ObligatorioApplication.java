@@ -85,10 +85,6 @@ public class ObligatorioApplication {
 			puesto1.agregarTarifas(tarifa2);
 			puesto1.agregarTarifas(tarifa3);
 
-			tarifa1.agregarCategoriaVehiculo(categoriaCamion); 
-			tarifa2.agregarCategoriaVehiculo(categoriaMoto);
-			tarifa3.agregarCategoriaVehiculo(categoriaAuto);
-
 			//Puesto 2
 			ArrayList<CategoriaVehiculo> categorias1P2 = new ArrayList<>();
 			categorias1P2.add(categoriaAuto);
@@ -121,6 +117,8 @@ public class ObligatorioApplication {
 
 			puesto3.agregarTarifas(tarifa6);
 			puesto3.agregarTarifas(tarifa7);
+			puesto3.agregarTarifas(tarifa8);
+			puesto3.agregarTarifas(tarifa9);
 			FachadaServicio.getInstancia().agregarTarifa(tarifa6);
 			FachadaServicio.getInstancia().agregarTarifa(tarifa7);
 			FachadaServicio.getInstancia().agregarTarifa(tarifa8);

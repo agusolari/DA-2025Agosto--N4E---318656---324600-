@@ -9,6 +9,7 @@ import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
+import obligatorioAraujoSolari.dtos.TransitoDto;
 import obligatorioAraujoSolari.dtos.VehiculoDto;
 
 import java.util.ArrayList;
@@ -40,12 +41,16 @@ public class ControladorVehiculo {
 
     @PostMapping("/obtenerTransitosporVehiculo")
     public List<Respuesta> obtenerTransitosporVehiculos(@RequestParam List<String> matriculas) throws PeajeException {
-        List<Transito> transitos = new ArrayList<>();
+        List<TransitoDto> transitosDto = new ArrayList<>();
         for (String matricula : matriculas) {
             Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
-            transitos.addAll(FachadaServicio.getInstancia().obtenerTransitosPorVehiculo(vehiculo));
+            List<Transito> transitos = FachadaServicio.getInstancia().obtenerTransitosPorVehiculo(vehiculo);
+            
+            for (Transito transito : transitos) {
+                transitosDto.add(new TransitoDto(transito));
+            }
         }
-        return Respuesta.lista(new Respuesta("transitos", transitos));
+        return Respuesta.lista(new Respuesta("transitos", transitosDto));
     }
 
 }

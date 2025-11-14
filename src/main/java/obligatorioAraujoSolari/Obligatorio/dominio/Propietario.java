@@ -60,4 +60,8 @@ public class Propietario extends Usuario {
     public void agregarBonificacion(Bonificacion bonificacion) {
         this.bonificaciones.add(bonificacion);
     }
+
+    public void actualizarSaldo(double monto) {
+        this.saldo += monto;
+    }
 }

@@ -518,6 +518,34 @@ button * {
 }
 
 /* ========================================
+   BOTÓN VOLVER
+   ======================================== */
+
+.btn-volver {
+    background: var(--color-acento);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transicion);
+    white-space: nowrap;
+    align-self: flex-start;
+}
+
+.btn-volver:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-suave);
+}
+
+.btn-volver:active {
+    transform: translateY(0);
+}
+
+/* ========================================
    SECCIÓN DE TARIFAS
    ======================================== */
 

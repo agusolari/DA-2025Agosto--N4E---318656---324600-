@@ -35,9 +35,6 @@ public class ServicioTransito {
                 transitosDelVehiculo.add(transito);
             }
         }
-        if (transitosDelVehiculo.isEmpty()) {
-            throw new PeajeException("El vehículo no tiene tránsitos registrados.");
-        }
         return transitosDelVehiculo;
     }
 

@@ -57,8 +57,8 @@ public class Transito {
         if (this.bonificacion != null) {
             descuento = this.bonificacion.calcularDescuento(this);
         }
-        return costoBase - (costoBase * descuento);
+        double costoFinal = costoBase - (costoBase * descuento);
+
+        return costoFinal;
     }
-    
-    //tenemos que crear el metodo para crear un transito desde esta clase 
 }

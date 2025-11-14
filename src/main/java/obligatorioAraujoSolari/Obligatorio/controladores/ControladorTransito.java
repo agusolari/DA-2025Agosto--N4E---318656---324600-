@@ -35,7 +35,13 @@ public class ControladorTransito {
     }
 
     @PostMapping("/emularTransito")
-    public List<Respuesta> emularTransito(@RequestParam String nombrePuesto, @RequestParam String matricula, @RequestParam String fechaTransito) throws PeajeException {
+    public List<Respuesta> emularTransito(@SessionAttribute(name = "usuarioLogueado", required=false) Administrador usuario,@RequestParam String nombrePuesto, @RequestParam String matricula, @RequestParam String fechaTransito) throws PeajeException {
+        
+        if (usuario == null) {
+             // Manejar el caso en que el usuario no está en la sesión pide redireccionar a la página de login
+             return Respuesta.lista(new Respuesta("usuarioNoAutenticado", "loginAdministrador.html"));
+         }
+
         try {
             Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
             PuestoPeaje puestoPeaje = FachadaServicio.getInstancia().getPuestoPeajePorNombre(nombrePuesto);
@@ -56,6 +62,7 @@ public class ControladorTransito {
             String bonificacionNombre = bonificacion != null ? bonificacion.getNombre() : "Ninguna";
             Double tarifaOriginal = tarifa.getMonto();
             Double tarifaConBonificacion = nuevoTransito.calcularTarifaFinal();
+            vehiculo.getPropietario().actualizarSaldo(-tarifaConBonificacion);
             Double saldoFinal = vehiculo.getPropietario().getSaldo();
 
             TransitoResultadoDto dto = new TransitoResultadoDto(

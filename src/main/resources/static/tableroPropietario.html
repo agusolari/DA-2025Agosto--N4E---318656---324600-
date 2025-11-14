@@ -497,7 +497,7 @@
             if (datos) {
                 document.getElementById('nombreCompleto').textContent = "PEAJES - " + (datos.nombreCompleto || 'Usuario').toUpperCase();
                 document.getElementById('nombrePropietario').textContent = datos.nombreCompleto || 'No disponible';
-                document.getElementById('estadoPropietario').textContent = datos.estado?.nombre || 'No disponible';
+                document.getElementById('estadoPropietario').textContent = datos.estadoNombre || 'No disponible';
                 document.getElementById('saldoActual').textContent = '$ ' + (datos.saldo ? datos.saldo.toFixed(2) : '0,00');
             }
         }
@@ -627,7 +627,7 @@
                 const descuento = (t.descuento || 0).toFixed(2);
                 const montoPagado = (t.montoPagado || 0).toFixed(2);
                 
-                tableHtml += `<tr style="border-bottom: 1px solid #bdc3c7;"><td style="padding: 12px;">${fecha}</td><td style="padding: 12px;">${t.puestoPeaje?.nombre || 'N/A'}</td><td style="padding: 12px;">${t.vehiculo?.matricula || 'N/A'}</td><td style="padding: 12px;">$ ${tarifa}</td><td style="padding: 12px; color: #27ae60; font-weight: 600;">-$ ${descuento}</td><td style="padding: 12px; font-weight: 600;">$ ${montoPagado}</td></tr>`;
+                tableHtml += `<tr style="border-bottom: 1px solid #bdc3c7;"><td style="padding: 12px;">${fecha}</td><td style="padding: 12px;">${t.puestoPeajeNombre || 'N/A'}</td><td style="padding: 12px;">${t.vehiculoMatricula || 'N/A'}</td><td style="padding: 12px;">$ ${tarifa}</td><td style="padding: 12px; color: #27ae60; font-weight: 600;">-$ ${descuento}</td><td style="padding: 12px; font-weight: 600;">$ ${montoPagado}</td></tr>`;
             });
             
             tableHtml += '</tbody></table>';

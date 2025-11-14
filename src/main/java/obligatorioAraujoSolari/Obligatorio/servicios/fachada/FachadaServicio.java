@@ -145,14 +145,6 @@ public class FachadaServicio {
     
     /* <--------- Servicios de transito ---------> */
     
-
-    public void agregarBonificacion(Bonificacion bonificacion) {
-        servicioTransito.agregarBonificacion(bonificacion);
-    }
-    
-    public List<Bonificacion> getBonificaciones() {
-        return servicioTransito.getBonificaciones();
-    }
     
     public List<Transito> obtenerTransitosPorVehiculo(Vehiculo vehiculo) throws PeajeException {
         return servicioTransito.obtenerTransitosPorVehiculo(vehiculo);
@@ -162,7 +154,27 @@ public class FachadaServicio {
         servicioTransito.registrarTransito(transito);
     }
 
+
+    /* <--------- Servicios de Bonificaciones ---------> */
+
+    
+    public Bonificacion obtenerBonificacionPorNombre(String nombre) throws PeajeException {
+        return servicioTransito.obtenerBonificacionPorNombre(nombre);
+    }
+
     public Bonificacion obtenerBonificacionAplicable(Vehiculo vehiculo, PuestoPeaje puestoPeaje) {
         return servicioTransito.obtenerBonificacionAplicable(vehiculo, puestoPeaje);
+    }
+
+    public void agregarBonificacion(Bonificacion bonificacion) {
+        servicioTransito.agregarBonificacion(bonificacion);
+    }
+
+    public void asignarBonificacionAPropietario(Propietario propietario, Bonificacion bonificacion, PuestoPeaje puestoPeaje) throws PeajeException {
+        servicioTransito.asignarBonificacionAPropietario(propietario, bonificacion, puestoPeaje);
+    }
+    
+    public List<Bonificacion> getBonificaciones() {
+        return servicioTransito.getBonificaciones();
     }
 }

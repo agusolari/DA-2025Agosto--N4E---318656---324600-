@@ -31,9 +31,9 @@
                         <label for="tipoBonificacion">Tipo de Bonificación</label>
                         <select id="tipoBonificacion">
                             <option value="">Seleccione un tipo...</option>
-                            <option value="trabajadores">Trabajadores</option>
-                            <option value="frecuentes">Frecuentes</option>
-                            <option value="exonerados">Exonerados</option>
+                            <option value="Trabajadores">Trabajadores</option>
+                            <option value="Frecuentes">Frecuentes</option>
+                            <option value="Exonerado">Exonerados</option>
                         </select>
                     </div>
                 </div>
@@ -63,11 +63,16 @@
     </div>
 
     <script>
-        urlIniciarVista = "/administrador/cargarVistaBonificaciones";
+        urlIniciarVista = "/bonificaciones/cargarVistaBonificaciones";
         
         function primerSubmitFinalizado() {
             cargarPuestos();
             cargarBonificaciones();
+        }
+
+        function mostrar_vistaBonificaciones(vista) {
+            // Esta función se llama cuando se carga la vista inicialmente
+            // No necesita hacer nada en particular, primerSubmitFinalizado se encarga del resto
         }
         
         window.addEventListener('DOMContentLoaded', function() {
@@ -90,7 +95,7 @@
         }
 
         function cargarBonificaciones() {
-            submit('/administrador/obtenerBonificaciones');
+            submit('/bonificaciones/obtenerBonificaciones');
         }
 
         function mostrar_bonificacionesActivas(bonificaciones) {
@@ -104,7 +109,8 @@
             let html = '<table class="tabla-admin"><thead><tr><th>Propietario</th><th>Tipo</th><th>Puesto</th><th>Fecha Asignación</th><th>Acciones</th></tr></thead><tbody>';
             
             bonificaciones.forEach(b => {
-                const fecha = b.fechaAsignacion ? new Date(b.fechaAsignacion).toLocaleDateString('es-UY') : 'N/A';
+                console.log({b});
+                const fecha = b.fechaAsignacion ? new Date(b.fechaAsignacion + 'T00:00:00').toLocaleDateString('es-UY') : 'N/A';
                 html += `<tr>
                     <td>${b.propietarioNombre || 'N/A'}</td>
                     <td>${b.nombre || 'N/A'}</td>
@@ -127,9 +133,9 @@
                 mostrarMensaje('Por favor complete todos los campos', 'error');
                 return;
             }
-
+            
             const params = `cedula=${encodeURIComponent(cedula)}&tipo=${encodeURIComponent(tipoBonificacion)}&puestoPeaje=${encodeURIComponent(puestoPeaje)}`;
-            submit('/administrador/asignarBonificacion?' + params);
+            submit('/bonificaciones/asignarBonificacion?' + params);
         }
 
         function mostrar_bonificacionAsignada(resultado) {
@@ -145,7 +151,7 @@
 
         function eliminarBonificacion(id) {
             if (confirm('¿Está seguro de que desea eliminar esta bonificación?')) {
-                submit('/administrador/eliminarBonificacion?id=' + id);
+                submit('/bonificaciones/eliminarBonificacion?id=' + id);
             }
         }
 

@@ -4,15 +4,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
-import obligatorioAraujoSolari.Obligatorio.dominio.Transito;
 import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
-import obligatorioAraujoSolari.dtos.TransitoDto;
 import obligatorioAraujoSolari.dtos.VehiculoDto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,20 +34,6 @@ public class ControladorVehiculo {
 
         //TODO: Es necesario pasar un id para mostrar en la vista?
         return Respuesta.lista(new Respuesta("vehiculos", vehiculosDto));
-    }
-
-    @PostMapping("/obtenerTransitosporVehiculo")
-    public List<Respuesta> obtenerTransitosporVehiculos(@RequestParam List<String> matriculas) throws PeajeException {
-        List<TransitoDto> transitosDto = new ArrayList<>();
-        for (String matricula : matriculas) {
-            Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
-            List<Transito> transitos = FachadaServicio.getInstancia().obtenerTransitosPorVehiculo(vehiculo);
-            
-            for (Transito transito : transitos) {
-                transitosDto.add(new TransitoDto(transito));
-            }
-        }
-        return Respuesta.lista(new Respuesta("transitos", transitosDto));
     }
 
 }

@@ -8,15 +8,13 @@ public class BonificacionTrabajadores extends Bonificacion {
         super("Trabajadores", "Tienen un 80% de descuento si el tránsito por el puesto asignado se realiza en un día de semana.", propietario, puestoPeaje, fechaAsignacion);
     }
 
-    BonificacionTrabajadores(Propietario propietario, PuestoPeaje puestoPeaje) {
+    public BonificacionTrabajadores(Propietario propietario, PuestoPeaje puestoPeaje) {
         super("Trabajadores", "Tienen un 80% de descuento si el tránsito por el puesto asignado se realiza en un día de semana.", propietario, puestoPeaje, LocalDate.now());
     }
 
     @Override
     protected double calcularDescuento(Transito transito) {
-        // Verificar si el puesto de peaje del tránsito coincide con el puesto asignado al propietario
         boolean esPuestoAsignado = transito.getPuestoPeaje().equals(getPuestoPeaje());
-        // Verificar si el día del tránsito es un día de semana (lunes a viernes)
         boolean esDiaSemana = transito.esDiaSemana();
 
         if(esPuestoAsignado && esDiaSemana) {

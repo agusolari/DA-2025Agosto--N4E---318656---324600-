@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Bonificacion;
+import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
 import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
 import obligatorioAraujoSolari.Obligatorio.dominio.Transito;
 import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
+import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 
 public class ServicioTransito {
 
@@ -54,6 +56,20 @@ public class ServicioTransito {
             }
         }
         return null;
+    }
+
+    public void asignarBonificacionAPropietario (Propietario propietario, Bonificacion bonificacion, PuestoPeaje puestoPeaje) throws PeajeException {
+        bonificaciones.add(bonificacion);
+        propietario.agregarBonificacion(bonificacion);
+    }
+
+    public Bonificacion obtenerBonificacionPorNombre(String nombre) throws PeajeException {
+        for (Bonificacion bonificacion : bonificaciones) {
+            if (bonificacion.getNombre().equalsIgnoreCase(nombre)) {
+                return bonificacion;
+            }
+        }
+        throw new PeajeException("Bonificación no encontrada");
     }
 
 }

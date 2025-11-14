@@ -484,7 +484,7 @@
             submit('/vehiculos/obtenerVehiculosPorPropietario?cedulaPropietario=' + encodeURIComponent(cedula));
             
             // Cargar bonificaciones (respuesta.id = "bonificaciones")
-            submit('/propietario/obtenerBonificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
+            submit('/bonificaciones/obtenerBonificacionesPorCedula?cedula=' + encodeURIComponent(cedula));
             
             // Cargar datos del propietario (respuesta.id = "propietario")
             submit('/propietario/obtenerUsuario?cedula=' + encodeURIComponent(cedula));
@@ -524,7 +524,8 @@
             let tableHtml = '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;"><thead style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;"><tr><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Tipo</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Descripción</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Puesto Peaje</th><th style="padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Fecha Asignación</th></tr></thead><tbody>';
             
             bonificaciones.forEach(b => {
-                const fecha = b.fechaAsignacion ? new Date(b.fechaAsignacion).toLocaleDateString('es-UY') : 'No disponible';
+                console.log({b});
+                const fecha = b.fechaAsignacion ? new Date(b.fechaAsignacion + 'T00:00:00').toLocaleDateString('es-UY') : 'No disponible';
                 tableHtml += `<tr style="border-bottom: 1px solid #bdc3c7;"><td style="padding: 12px;"><strong>${b.nombre || 'No especificado'}</strong></td><td style="padding: 12px;">${b.descripcion || 'No disponible'}</td><td style="padding: 12px;">${b.puestoPeaje || 'No especificado'}</td><td style="padding: 12px;">${fecha}</td></tr>`;
             });
             
@@ -590,7 +591,7 @@
             }
             
             const params = matriculas.map(m => 'matriculas=' + encodeURIComponent(m)).join('&');
-            submit('/vehiculos/obtenerTransitosporVehiculo?' + params);
+            submit('/transito/obtenerTransitosporVehiculo?' + params);
         }
 
         function mostrar_transitos(transitos) {

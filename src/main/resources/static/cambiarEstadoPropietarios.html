@@ -62,7 +62,7 @@
     </div>
 
     <script>
-        urlIniciarVista = "/administrador/cargarVistaCambioEstado";
+        urlIniciarVista = "/estados/cargarVistaCambioEstado";
         
         function primerSubmitFinalizado() {
             cargarPropietarios();
@@ -72,7 +72,7 @@
         });
 
         function cargarPropietarios() {
-            submit('/administrador/obtenerPropietarios');
+            submit('/propietario/obtenerPropietarios');
         }
 
         function mostrar_propietariosLista(propietarios) {
@@ -134,14 +134,14 @@
             }
 
             const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}&motivo=${encodeURIComponent(motivo)}`;
-            submit('/administrador/cambiarEstadoPropietario?' + params);
+            submit('/estados/cambiarEstadoPropietario?' + params);
         }
 
         function cambiarEstadoDirecto(cedula, nuevoEstado) {
             if (!nuevoEstado) return;
             
             const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}&motivo=Cambio realizado desde tabla`;
-            submit('/administrador/cambiarEstadoPropietario?' + params);
+            submit('/estados/cambiarEstadoPropietario?' + params);
         }
 
         function mostrar_estadoCambiado(resultado) {

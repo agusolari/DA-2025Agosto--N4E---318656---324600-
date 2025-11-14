@@ -1,6 +1,7 @@
 package obligatorioAraujoSolari.Obligatorio.controladores;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
+import obligatorioAraujoSolari.dtos.TransitoDto;
 import obligatorioAraujoSolari.dtos.TransitoResultadoDto;
 
 @RestController
@@ -74,6 +76,20 @@ public class ControladorTransito {
         } catch (Exception e) {
             throw new PeajeException("Error al emular tránsito: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/obtenerTransitosporVehiculo")
+    public List<Respuesta> obtenerTransitosporVehiculos(@RequestParam List<String> matriculas) throws PeajeException {
+        List<TransitoDto> transitosDto = new ArrayList<>();
+        for (String matricula : matriculas) {
+            Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
+            List<Transito> transitos = FachadaServicio.getInstancia().obtenerTransitosPorVehiculo(vehiculo);
+            
+            for (Transito transito : transitos) {
+                transitosDto.add(new TransitoDto(transito));
+            }
+        }
+        return Respuesta.lista(new Respuesta("transitos", transitosDto));
     }
 
     //TODO: VER COMO MOSTRAR EN LA VISTA EL RESULTADO DEL EMULAR TRANSITO, CREAR VISTA QUE CONSUMA ESTE BACK

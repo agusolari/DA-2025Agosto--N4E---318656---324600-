@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +44,6 @@ public class ControladorBonificaciones {
         return Respuesta.lista(new Respuesta("bonificacionesActivas", bonificaciones));
     }
 
-
     @PostMapping("/asignarBonificacion")
     public List<Respuesta> asignarBonificacion(
             @SessionAttribute(name = "usuarioLogueado", required=false) Administrador usuario,
@@ -67,6 +64,14 @@ public class ControladorBonificaciones {
             }
             if (puesto == null) {
                 throw new PeajeException("Puesto de peaje no encontrado");
+            }
+            
+            // Verificar si ya tiene una bonificación para este puesto
+            for (Bonificacion b : propietario.getBonificaciones()) {
+                if (b.getPuestoPeaje().getNombre().equals(puesto.getNombre())) {
+                    return Respuesta.lista(new Respuesta("bonificacionYaAsignada", 
+                        "Ya tiene una bonificación para el puesto seleccionado"));
+                }
             }
             
             // Crear la bonificación según el tipo

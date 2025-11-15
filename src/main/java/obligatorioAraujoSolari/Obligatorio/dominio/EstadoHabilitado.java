@@ -1,5 +1,7 @@
 package obligatorioAraujoSolari.Obligatorio.dominio;
 
+import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
+
 public class EstadoHabilitado implements Estado {
 
     @Override
@@ -31,5 +33,20 @@ public class EstadoHabilitado implements Estado {
     public boolean puedeRegistrarNotificacion() {
         return true;
     }
-    
+
+    @Override
+    public Estado cambiarA(String nuevoEstado) throws PeajeException {
+        switch (nuevoEstado) {
+            case "Habilitado":
+                throw new PeajeException("El propietario ya está en estado Habilitado.");
+            case "Suspendido":
+                return new EstadoSuspendido();
+            case "Penalizado":
+                return new EstadoPenalizado();
+            case "Deshabilitado":
+                return new EstadoDeshabilitado();
+            default:
+                throw new PeajeException("Estado inválido: " + nuevoEstado);
+        }
+    }
 }

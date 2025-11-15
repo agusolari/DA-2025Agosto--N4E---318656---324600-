@@ -23,26 +23,27 @@
             <div class="form-section">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="cedulaPropietario">Cédula del Propietario</label>
+                        <label for="cedulaPropietario">Cédula de identidad</label>
                         <input type="text" id="cedulaPropietario" placeholder="Ej: 12345678">
                     </div>
-
-                    <div class="form-group">
-                        <label for="nuevoEstado">Nuevo Estado</label>
-                        <select id="nuevoEstado">
-                            <option value="">Seleccione un estado...</option>
-                            <option value="habilitado">Habilitado</option>
-                            <option value="penalizado">Penalizado</option>
-                            <option value="suspendido">Suspendido</option>
-                            <option value="deshabilitado">Deshabilitado</option>
-                        </select>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn-secundario" onclick="buscarPropietario()" style="width: 100%;">Buscar propietario</button>
                     </div>
+                </div>
+
+                <div id="infoPropietario" style="display: none; background: #d6eaf8; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #3498db;">
+                    <h4 style="margin: 0 0 10px 0;">Propietario</h4>
+                    <p style="margin: 5px 0;"><strong>Nombre:</strong> <span id="nombrePropietario"></span></p>
+                    <p style="margin: 5px 0;"><strong>Estado actual:</strong> <span id="estadoActualPropietario"></span></p>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="motivo">Motivo del Cambio (opcional)</label>
-                        <input type="text" id="motivo" placeholder="Especifique el motivo...">
+                        <label for="nuevoEstado">Nuevo Estado</label>
+                        <select id="nuevoEstado">
+                            <option value="">Seleccione un estado...</option>
+                        </select>
+                        <p class="form-hint">El estado actual se mostrará preseleccionado.</p>
                     </div>
                 </div>
 
@@ -51,13 +52,6 @@
             </div>
 
             <div id="mensajeResultado" class="mensaje-resultado" style="display: none;"></div>
-
-            <div class="propietarios-section">
-                <h3>Propietarios en el Sistema</h3>
-                <div id="propietariosContainer" class="propietarios-container">
-                    <p class="placeholder">Cargando propietarios...</p>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -65,94 +59,83 @@
         urlIniciarVista = "/estados/cargarVistaCambioEstado";
         
         function primerSubmitFinalizado() {
-            cargarPropietarios();
+            cargarEstados();
+        }
+
+        function cargarEstados() {
+            submit('/estados/obtenerEstados');
+        }
+
+        function mostrar_estadosDisponibles(estados) {
+            const select = document.getElementById('nuevoEstado');
+            select.innerHTML = '<option value="">Seleccione un estado...</option>';
+            
+            estados.forEach(e => {
+                const option = document.createElement('option');
+                option.value = e.nombreEstado;
+                option.textContent = e.nombreEstado;
+                select.appendChild(option);
+            });
+        }
+
+        function buscarPropietario() {
+            const cedula = document.getElementById('cedulaPropietario').value;
+            
+            if (!cedula) {
+                mostrarMensaje('Por favor ingrese una cédula', 'error');
+                return;
+            }
+            
+            const params = `cedula=${encodeURIComponent(cedula)}`;
+            submit('/propietario/obtenerUsuario?' + params);
+        }
+
+        function mostrar_propietario(data) {
+            document.getElementById('nombrePropietario').textContent = data.nombreCompleto;
+            document.getElementById('estadoActualPropietario').textContent = data.estadoNombre;
+            
+            // Preseleccionar el estado actual en el select
+            const selectEstado = document.getElementById('nuevoEstado');
+            selectEstado.value = data.estadoNombre;
+            
+            document.getElementById('infoPropietario').style.display = 'block';
+        }
+
+        function mostrar_propietarioNoEncontrado(mensaje) {
+            mostrarMensaje(mensaje || 'No existe el propietario', 'error');
+            document.getElementById('infoPropietario').style.display = 'none';
         }
         
         window.addEventListener('DOMContentLoaded', function() {
         });
 
-        function cargarPropietarios() {
-            submit('/propietario/obtenerPropietarios');
-        }
-
-        function mostrar_propietariosLista(propietarios) {
-            const container = document.getElementById('propietariosContainer');
-            
-            if (!propietarios || propietarios.length === 0) {
-                container.innerHTML = '<p class="placeholder">No hay propietarios en el sistema</p>';
-                return;
-            }
-
-            let html = '<table class="tabla-admin"><thead><tr><th>Cédula</th><th>Nombre</th><th>Estado Actual</th><th>Saldo</th><th>Acciones</th></tr></thead><tbody>';
-            
-            propietarios.forEach(p => {
-                const estadoColor = getEstadoColor(p.estado);
-                html += `<tr>
-                    <td>${p.cedula || 'N/A'}</td>
-                    <td>${p.nombreCompleto || 'N/A'}</td>
-                    <td><span class="estado-badge ${estadoColor}">${p.estado || 'N/A'}</span></td>
-                    <td>$ ${(p.saldo || 0).toFixed(2)}</td>
-                    <td>
-                        <select onchange="cambiarEstadoDirecto('${p.cedula}', this.value)" class="select-inline">
-                            <option value="">-- Cambiar a --</option>
-                            <option value="habilitado">Habilitado</option>
-                            <option value="penalizado">Penalizado</option>
-                            <option value="suspendido">Suspendido</option>
-                            <option value="deshabilitado">Deshabilitado</option>
-                        </select>
-                    </td>
-                </tr>`;
-            });
-            
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-
-        function getEstadoColor(estado) {
-            switch(estado?.toLowerCase()) {
-                case 'habilitado':
-                    return 'estado-habilitado';
-                case 'penalizado':
-                    return 'estado-penalizado';
-                case 'suspendido':
-                    return 'estado-suspendido';
-                case 'deshabilitado':
-                    return 'estado-deshabilitado';
-                default:
-                    return '';
-            }
-        }
-
         function cambiarEstado() {
             const cedula = document.getElementById('cedulaPropietario').value;
             const nuevoEstado = document.getElementById('nuevoEstado').value;
-            const motivo = document.getElementById('motivo').value;
 
-            if (!cedula || !nuevoEstado) {
-                mostrarMensaje('Por favor complete los campos requeridos', 'error');
+            if (!cedula) {
+                mostrarMensaje('Por favor ingrese una cédula', 'error');
                 return;
             }
 
-            const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}&motivo=${encodeURIComponent(motivo)}`;
+            if (!nuevoEstado) {
+                mostrarMensaje('Debe especificar un estado', 'error');
+                return;
+            }
+
+            const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}`;
             submit('/estados/cambiarEstadoPropietario?' + params);
         }
 
-        function cambiarEstadoDirecto(cedula, nuevoEstado) {
-            if (!nuevoEstado) return;
-            
-            const params = `cedula=${encodeURIComponent(cedula)}&nuevoEstado=${encodeURIComponent(nuevoEstado)}&motivo=Cambio realizado desde tabla`;
-            submit('/estados/cambiarEstadoPropietario?' + params);
+        function mostrar_estadoYaAsignado(mensaje) {
+            mostrarMensaje(mensaje || 'El propietario ya está en estado ' + document.getElementById('nuevoEstado').value, 'error');
         }
 
         function mostrar_estadoCambiado(resultado) {
             mostrarMensaje('Estado del propietario actualizado correctamente', 'exito');
             document.getElementById('cedulaPropietario').value = '';
             document.getElementById('nuevoEstado').value = '';
-            document.getElementById('motivo').value = '';
-            
-            setTimeout(() => {
-                cargarPropietarios();
-            }, 1000);
+            document.getElementById('infoPropietario').style.display = 'none';
         }
 
         function mostrarMensaje(texto, tipo) {

@@ -89,6 +89,10 @@ public class FachadaServicio {
         servicioUsuarios.agregarEstado(estado);
     }
 
+    public void cambiarEstadoPropietario(Propietario propietario, String nombreEstado) throws PeajeException {
+        servicioUsuarios.cambiarEstadoPropietario(propietario, nombreEstado);
+    }
+
     /* <--------- Servicios de Peajes ---------> */
 
     public void agregarPuestoPeaje(PuestoPeaje puesto) {

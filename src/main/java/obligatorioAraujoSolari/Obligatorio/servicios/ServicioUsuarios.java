@@ -1,5 +1,7 @@
 package obligatorioAraujoSolari.Obligatorio.servicios;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
 import obligatorioAraujoSolari.Obligatorio.dominio.Estado;
+import obligatorioAraujoSolari.Obligatorio.dominio.Notificacion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.Sesion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Usuario;
@@ -110,4 +113,19 @@ public class ServicioUsuarios {
         // FachadaServicios.getInstancia().notificar(Observador.Evento.SESION_ACTUALIZADA);
     }
 
+    public void cambiarEstadoPropietario(Propietario propietario, String nombreEstado) throws PeajeException {
+        // Delegamos al patrón State
+        propietario.cambiarEstado(nombreEstado);
+        
+        // Registrar notificación
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String fechaHora = LocalDateTime.now().format(formatter);
+        String mensaje = fechaHora + " - Se ha cambiado tu estado en el sistema. Tu estado actual es " + nombreEstado;
+        
+        Notificacion notificacion = new Notificacion();
+        notificacion.setFechaHora(LocalDateTime.now());
+        notificacion.setMensaje(mensaje);
+        
+        propietario.getNotificaciones().add(notificacion);
+    }
 }

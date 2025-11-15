@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 
 public class Propietario extends Usuario {
 
@@ -63,5 +64,9 @@ public class Propietario extends Usuario {
 
     public void actualizarSaldo(double monto) {
         this.saldo += monto;
+    }
+
+    public void cambiarEstado(String nuevoEstado) throws PeajeException {
+        this.estado = this.estado.cambiarA(nuevoEstado);
     }
 }

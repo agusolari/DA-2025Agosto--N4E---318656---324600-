@@ -48,14 +48,37 @@ public class ControladorTransito {
             Vehiculo vehiculo = FachadaServicio.getInstancia().obtenerVehiculoPorMatricula(matricula);
             PuestoPeaje puestoPeaje = FachadaServicio.getInstancia().getPuestoPeajePorNombre(nombrePuesto);
             Tarifa tarifa = FachadaServicio.getInstancia().getTarifaPorCategoriaYPuesto(vehiculo.getCategoria(), puestoPeaje);
-            Bonificacion bonificacion = FachadaServicio.getInstancia().obtenerBonificacionAplicable(vehiculo, puestoPeaje);
+            
+            // VALIDACIÓN 1: Verificar estado del propietario - Deshabilitado no puede transitar
+            if (!vehiculo.getPropietario().getEstado().puedeRegistrarTransito()) {
+                String nombreEstado = vehiculo.getPropietario().getEstado().getNombreEstado();
+                throw new PeajeException("El propietario del vehículo está " + nombreEstado.toLowerCase() + ", no puede realizar tránsitos");
+            }
+            
+            // Obtener bonificación solo si el estado lo permite
+            Bonificacion bonificacion = null;
+            if (vehiculo.getPropietario().getEstado().aplicaBonificacion()) {
+                bonificacion = FachadaServicio.getInstancia().obtenerBonificacionAplicable(vehiculo, puestoPeaje);
+            }
             
             Transito nuevoTransito = new Transito(vehiculo, puestoPeaje, tarifa, bonificacion);
+            Double tarifaConBonificacion = nuevoTransito.calcularTarifaFinal();
+            
+            // VALIDACIÓN 2: Verificar saldo suficiente ANTES de registrar el tránsito
+            if (vehiculo.getPropietario().getSaldo() < tarifaConBonificacion) {
+                throw new PeajeException("Saldo insuficiente: $" + vehiculo.getPropietario().getSaldo());
+            }
+            
+            // Registrar el tránsito
             FachadaServicio.getInstancia().registrarTransito(nuevoTransito);
 
+            // Crear notificación solo si el estado lo permite
             LocalDateTime fechaTransitoDT = LocalDateTime.parse(fechaTransito.replace(" ", "T"));
             Notificacion notificacion = new Notificacion(fechaTransitoDT, nuevoTransito, vehiculo.getPropietario());
             vehiculo.getPropietario().agregarNotificacion(notificacion);
+
+            // Actualizar saldo
+            vehiculo.getPropietario().actualizarSaldo(-tarifaConBonificacion);
 
             String propietarioNombre = vehiculo.getPropietario().getNombreCompleto();
             String propietarioEstado = vehiculo.getPropietario().getEstado().getNombreEstado();
@@ -63,8 +86,6 @@ public class ControladorTransito {
             String vehiculoCategoria = vehiculo.getCategoria().getNombre();
             String bonificacionNombre = bonificacion != null ? bonificacion.getNombre() : "Ninguna";
             Double tarifaOriginal = tarifa.getMonto();
-            Double tarifaConBonificacion = nuevoTransito.calcularTarifaFinal();
-            vehiculo.getPropietario().actualizarSaldo(-tarifaConBonificacion);
             Double saldoFinal = vehiculo.getPropietario().getSaldo();
 
             TransitoResultadoDto dto = new TransitoResultadoDto(

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
-import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.utils.ConexionNavegador;
 import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
 import obligatorioAraujoSolari.observer.Observable;
@@ -25,7 +24,6 @@ import obligatorioAraujoSolari.observer.Observador;
 @RequestMapping("/tableroPropietario")
 public class ControladorTableroPropietario implements Observador{
 
-    private Vehiculo vehiculo;
     private final ConexionNavegador conexionNavegador;
 
     public ControladorTableroPropietario(@Autowired ConexionNavegador conexionNavegador) {
@@ -38,20 +36,27 @@ public class ControladorTableroPropietario implements Observador{
              // Manejar el caso en que el usuario no está en la sesión pide redireccionar a la página de login
              return Respuesta.lista(new Respuesta("usuarioNoAutenticado", "loginPropietario.html"));
          }
-        //  vehiculo.subscribir(this);
+         // Suscribimos el controlador a los cambios del usuario propietario
+         usuario.subscribir(this);
          return Respuesta.lista(new Respuesta("cedula", usuario.getCedula()));
     }
 
+    // Endpoint para registrar la conexión SSE, que permitirá enviar notificaciones en tiempo real al front
     @GetMapping(value = "registroSSE", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter registrarSSE() {
         this.conexionNavegador.conectarSSE();
         return this.conexionNavegador.getConexionSSE();
     }
     
+    //TODO: Ver con Agustín dónde era que creabamos como enum los tipos de eventos
     @Override
     public void actualizar(Observable origen, Object evento) {
-        // if(evento == Observador.Evento.TRANSITO_ACTUALIZADO) {
-        //     conexionNavegador.enviarJSON(Respuesta.lista(new Respuesta("transitoActualizado", vehiculo)));
-        // }
+        if(evento.equals("NOTIFICACION_AGREGADA") || 
+           evento.equals("SALDO_ACTUALIZADO") || 
+           evento.equals("BONIFICACION_AGREGADA") || 
+           evento.equals("ESTADO_CAMBIADO")) {
+            // Notify the view via SSE to refresh
+            conexionNavegador.enviarJSON(Respuesta.lista(new Respuesta("actualizarTablero", true)));
+        }
     }
 }

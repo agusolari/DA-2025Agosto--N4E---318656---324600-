@@ -6,11 +6,9 @@ import java.util.List;
 import obligatorioAraujoSolari.Obligatorio.dominio.Bonificacion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.dominio.PuestoPeaje;
-import obligatorioAraujoSolari.Obligatorio.dominio.Tarifa;
 import obligatorioAraujoSolari.Obligatorio.dominio.Transito;
 import obligatorioAraujoSolari.Obligatorio.dominio.Vehiculo;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
-import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 
 public class ServicioTransito {
 

@@ -66,7 +66,10 @@ public class ControladorBonificaciones {
                 throw new PeajeException("Puesto de peaje no encontrado");
             }
             
-            // Verificar si ya tiene una bonificación para este puesto
+            if (!propietario.getEstado().puedeLoguear()) {
+                throw new PeajeException("El propietario está deshabilitado. No se pueden asignar bonificaciones");
+            }
+            
             for (Bonificacion b : propietario.getBonificaciones()) {
                 if (b.getPuestoPeaje().getNombre().equals(puesto.getNombre())) {
                     return Respuesta.lista(new Respuesta("bonificacionYaAsignada", 

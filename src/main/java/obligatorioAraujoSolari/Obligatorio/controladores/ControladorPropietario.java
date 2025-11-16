@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
-import obligatorioAraujoSolari.Obligatorio.dominio.Bonificacion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Notificacion;
 import obligatorioAraujoSolari.Obligatorio.dominio.Propietario;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
 import obligatorioAraujoSolari.Obligatorio.servicios.fachada.FachadaServicio;
 import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
-import obligatorioAraujoSolari.dtos.BonificacionDto;
 import obligatorioAraujoSolari.dtos.NotificacionDto;
 import obligatorioAraujoSolari.dtos.PropietarioDto;
 
@@ -57,7 +55,7 @@ public class ControladorPropietario {
         }
         
         List<Propietario> propietarios = FachadaServicio.getInstancia().obtenerPropietarios();
-        // TODO: Mapear a PropietarioDto para evitar referencias circulares
+
         return Respuesta.lista(new Respuesta("propietariosLista", propietarios));
     }
 }

@@ -32,6 +32,12 @@ public class ServicioUsuarios {
 
     public Sesion loginUsuarioPropietario(String cedula, String contrasenia) throws PeajeException {
         Propietario usuario = (Propietario) login(cedula, contrasenia, propietarios, "Usuario de propietario y/o contraseña incorrectos");
+        
+        // Validar que el propietario no esté deshabilitado
+        if (!usuario.getEstado().puedeLoguear()) {
+            throw new PeajeException("Usuario deshabilitado, no puede ingresar al sistema");
+        }
+        
         Sesion sesion = new Sesion(usuario);
         sesion.setFechaInicio(new Date());
         sesionesActivas.add(sesion);

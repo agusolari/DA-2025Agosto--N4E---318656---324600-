@@ -16,8 +16,8 @@ import obligatorioAraujoSolari.Obligatorio.utils.Respuesta;
 import obligatorioAraujoSolari.dtos.NotificacionDto;
 
 @RestController
-@RequestMapping("notificaiones")
-public class ControladorNotificaiones {
+@RequestMapping("notificaciones")
+public class ControladorNotificaciones {
 
     @PostMapping("obtenerNotificacionesPorCedula")
     public List<Respuesta> obtenerNotificacionesPorCedula(@RequestParam String cedula) throws PeajeException {
@@ -30,6 +30,24 @@ public class ControladorNotificaiones {
             .map(NotificacionDto::new)
             .collect(Collectors.toList());
         return Respuesta.lista(new Respuesta("notificaciones", notificacionesDto));
+    }
+
+    @PostMapping("borrarNotificaciones")
+    public List<Respuesta> borrarNotificaciones(@RequestParam String cedula) throws PeajeException {
+        Propietario propietario = FachadaServicio.getInstancia().obtenerPropietarioPorCedula(cedula);
+        if (propietario == null) {
+            throw new PeajeException("Propietario no encontrado");
+        }
+
+        // Validar que tenga notificaciones para borrar
+        if (propietario.getNotificaciones() == null || propietario.getNotificaciones().isEmpty()) {
+            throw new PeajeException("No hay notificaciones para borrar");
+        }
+
+        // Borrar todas las notificaciones
+        propietario.getNotificaciones().clear();
+        
+        return Respuesta.lista(new Respuesta("notificacionesBorradas", "Todas las notificaciones han sido borradas exitosamente"));
     }
     
 }

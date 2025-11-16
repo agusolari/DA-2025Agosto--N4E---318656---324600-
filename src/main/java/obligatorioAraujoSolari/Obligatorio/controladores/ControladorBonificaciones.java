@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import obligatorioAraujoSolari.Obligatorio.dominio.Administrador;
 import obligatorioAraujoSolari.Obligatorio.dominio.Bonificacion;
@@ -91,31 +90,19 @@ public class ControladorBonificaciones {
         }
     }
 
-    @PostMapping("/eliminarBonificacion")
-    public List<Respuesta> eliminarBonificacion(
-            @SessionAttribute(name = "usuarioLogueado", required=false) Administrador usuario,
-            @RequestParam String id) throws PeajeException {
-        
-        if (usuario == null) {
-            throw new PeajeException("Usuario no autenticado");
-        }
-        
-        // TODO: Implementar eliminación de bonificación
-        return Respuesta.lista(new Respuesta("bonificacionEliminada", "Bonificación eliminada exitosamente"));
-    }
-
-    @PostMapping("obtenerBonificacionesPorCedula")
-    public List<Respuesta> obtenerBonificacionesPorCedula(@RequestParam String cedula) throws PeajeException {
-        Propietario propietario = FachadaServicio.getInstancia().obtenerPropietarioPorCedula(cedula);
-        if (propietario == null) {
-            throw new PeajeException("Propietario no encontrado");
-        }
-        List<Bonificacion> bonificaciones = propietario.getBonificaciones();
-        List<BonificacionDto> bonificacionesDto = bonificaciones.stream()
-            .map(BonificacionDto::new)
-            .collect(Collectors.toList());
-        return Respuesta.lista(new Respuesta("bonificaciones", bonificacionesDto));
-    }
+    // TODO: Chequear si se puede borrar.
+    // @PostMapping("obtenerBonificacionesPorCedula")
+    // public List<Respuesta> obtenerBonificacionesPorCedula(@RequestParam String cedula) throws PeajeException {
+    //     Propietario propietario = FachadaServicio.getInstancia().obtenerPropietarioPorCedula(cedula);
+    //     if (propietario == null) {
+    //         throw new PeajeException("Propietario no encontrado");
+    //     }
+    //     List<Bonificacion> bonificaciones = propietario.getBonificaciones();
+    //     List<BonificacionDto> bonificacionesDto = bonificaciones.stream()
+    //         .map(BonificacionDto::new)
+    //         .collect(Collectors.toList());
+    //     return Respuesta.lista(new Respuesta("bonificaciones", bonificacionesDto));
+    // }
 
      private Bonificacion crearBonificacionPorTipo(String tipo, Propietario propietario, PuestoPeaje puesto) {
         switch (tipo) {

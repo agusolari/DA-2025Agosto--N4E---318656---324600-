@@ -234,17 +234,6 @@
             document.getElementById('puestoPeaje').value = '';
         }
 
-        function eliminarBonificacion(id) {
-            if (confirm('¿Está seguro de que desea eliminar esta bonificación?')) {
-                submit('/bonificaciones/eliminarBonificacion?id=' + id);
-            }
-        }
-
-        function mostrar_bonificacionEliminada(resultado) {
-            mostrarMensaje('Bonificación eliminada correctamente', 'exito');
-            cargarBonificaciones();
-        }
-
         function mostrarMensaje(texto, tipo) {
             const div = document.getElementById('mensajeResultado');
             div.textContent = texto;

@@ -112,7 +112,4 @@ public class ControladorTransito {
         }
         return Respuesta.lista(new Respuesta("transitos", transitosDto));
     }
-
-    //TODO: VER COMO MOSTRAR EN LA VISTA EL RESULTADO DEL EMULAR TRANSITO, CREAR VISTA QUE CONSUMA ESTE BACK
-    // CONTEMPLAR CURSOS ALTERNATIVOS PARA MOSTRAR MENSAJES DE ERROR.
 }

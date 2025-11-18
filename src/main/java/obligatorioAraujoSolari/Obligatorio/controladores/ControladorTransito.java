@@ -71,6 +71,9 @@ public class ControladorTransito {
             
             // Registrar el tránsito
             FachadaServicio.getInstancia().registrarTransito(nuevoTransito);
+            
+            // Establecer el monto pagado
+            nuevoTransito.setMontoPagado(tarifaConBonificacion);
 
             // Crear notificación solo si el estado lo permite
             LocalDateTime fechaTransitoDT = LocalDateTime.parse(fechaTransito.replace(" ", "T"));

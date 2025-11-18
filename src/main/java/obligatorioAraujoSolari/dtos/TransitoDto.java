@@ -26,7 +26,7 @@ public class TransitoDto {
         this.fechaTransito = transito.getFechaHora();
         
         // Usar el monto pagado guardado en el tránsito
-        this.montoPagado = transito.calcularTarifaFinal();
+        this.montoPagado = transito.getMontoPagado();
         this.descuento = this.tarifa - this.montoPagado;
         
         if (transito.getBonificacion() != null) {

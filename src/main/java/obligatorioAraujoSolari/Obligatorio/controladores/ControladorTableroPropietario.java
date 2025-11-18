@@ -24,6 +24,7 @@ import obligatorioAraujoSolari.observer.Observador;
 @RequestMapping("/tableroPropietario")
 public class ControladorTableroPropietario implements Observador{
 
+    private Propietario propietario;
     private final ConexionNavegador conexionNavegador;
 
     public ControladorTableroPropietario(@Autowired ConexionNavegador conexionNavegador) {
@@ -37,8 +38,17 @@ public class ControladorTableroPropietario implements Observador{
              return Respuesta.lista(new Respuesta("usuarioNoAutenticado", "loginPropietario.html"));
          }
          // Suscribimos el controlador a los cambios del usuario propietario
+         propietario = usuario;
          usuario.subscribir(this);
          return Respuesta.lista(new Respuesta("cedula", usuario.getCedula()));
+    }
+
+    @PostMapping("/vistaDesconectada")
+    public void vistaDesconectada() {
+        if (propietario != null) {
+            propietario.desubscribir(this);
+            propietario = null;
+        }
     }
 
     // Endpoint para registrar la conexión SSE, que permitirá enviar notificaciones en tiempo real al front
@@ -48,14 +58,13 @@ public class ControladorTableroPropietario implements Observador{
         return this.conexionNavegador.getConexionSSE();
     }
     
-    //TODO: Ver con Agustín dónde era que creabamos como enum los tipos de eventos
     @Override
     public void actualizar(Observable origen, Object evento) {
-        if(evento.equals("NOTIFICACION_AGREGADA") || 
-           evento.equals("SALDO_ACTUALIZADO") || 
-           evento.equals("BONIFICACION_AGREGADA") || 
-           evento.equals("ESTADO_CAMBIADO")) {
-            // Notify the view via SSE to refresh
+        if(evento.equals(Observador.Evento.NOTIFICACION_AGREGADA) || 
+           evento.equals(Observador.Evento.SALDO_ACTUALIZADO) || 
+           evento.equals(Observador.Evento.BONIFICACION_ACTUALIZADA) || 
+           evento.equals(Observador.Evento.ESTADO_ACTUALIZADO)) {
+
             conexionNavegador.enviarJSON(Respuesta.lista(new Respuesta("actualizarTablero", true)));
         }
     }

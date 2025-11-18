@@ -13,9 +13,7 @@ public class BonificacionFrecuentes extends Bonificacion {
 
     @Override
     protected double calcularDescuento(Transito transito) {
-        //TODO: Preguntar si deberíamos crear un método en Transito que llame al 
-        //obtenerCantidadTransitosEnPuestoHoy y desde acá solo hacer getTransito().nombreDelMetodo()
-        if(transito.getVehiculo().obtenerCantidadTransitosEnPuestoHoy(getPuestoPeaje()) > 1) {
+        if(transito.getVehiculo().obtenerCantidadTransitosEnPuestoHoy(getPuestoPeaje()) > 0) {
             return 0.5;
         }
         return 0;

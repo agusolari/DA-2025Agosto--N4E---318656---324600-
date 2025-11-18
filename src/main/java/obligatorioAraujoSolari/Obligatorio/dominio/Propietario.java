@@ -6,13 +6,13 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import obligatorioAraujoSolari.Obligatorio.excepciones.PeajeException;
-import obligatorioAraujoSolari.observer.Observable;
+import obligatorioAraujoSolari.observer.ManejadorObservable;
 import obligatorioAraujoSolari.observer.Observador;
 
 public class Propietario extends Usuario {
 
-    // Chequear con Agustín y/o profesor si está bien aplicarlo como composición, para no perder la herencia de Usuario
-    private Observable observable = new Observable() {};
+    // Manejador auxiliar para el patrón Observable (composición en lugar de herencia)
+    private final ManejadorObservable manejadorObservable = new ManejadorObservable();
 
     @Getter 
     @Setter
@@ -47,19 +47,15 @@ public class Propietario extends Usuario {
         this.saldoMinimoAlerta = 500;
     }
 
-    // Métodos Observable
+    // Métodos públicos para que observadores se suscriban/desuscriban
     public void subscribir(Observador observador) {
-        observable.subscribir(observador);
+        manejadorObservable.subscribir(observador);
     }
 
     public void desubscribir(Observador observador) {
-        observable.desubscribir(observador);
+        manejadorObservable.desubscribir(observador);
     }
-
-    private void notificar(Object evento) {
-        observable.notificar(evento);
-    }
-    ///
+    
     public void agregarVehiculo(Vehiculo vehiculo) {
         this.vehiculos.add(vehiculo);
     }
@@ -73,22 +69,22 @@ public class Propietario extends Usuario {
                 notificacion.setMensaje(notificacion.getFechaHora().toString() + " Tu saldo actual es de $ " + this.saldo + " Te recomendamos hacer una recarga.");
                 this.notificaciones.add(notificacion);
             }
-            notificar("NOTIFICACION_AGREGADA");
+            manejadorObservable.notificar(Observador.Evento.NOTIFICACION_AGREGADA);
         }
     }
 
     public void agregarBonificacion(Bonificacion bonificacion) {
         this.bonificaciones.add(bonificacion);
-        notificar("BONIFICACION_AGREGADA");
+        manejadorObservable.notificar(Observador.Evento.BONIFICACION_ACTUALIZADA);
     }
 
     public void actualizarSaldo(double monto) {
         this.saldo += monto;
-        notificar("SALDO_ACTUALIZADO");
+        manejadorObservable.notificar(Observador.Evento.SALDO_ACTUALIZADO);
     }
 
     public void cambiarEstado(String nuevoEstado) throws PeajeException {
         this.estado = this.estado.cambiarA(nuevoEstado);
-        notificar("ESTADO_CAMBIADO");
+        manejadorObservable.notificar(Observador.Evento.ESTADO_ACTUALIZADO);
     }
 }

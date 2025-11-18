@@ -228,10 +228,13 @@
             // Actualizar la vista de bonificaciones asignadas
             mostrar_bonificacionesAsignadas();
             
-            // Limpiar los campos
-            document.getElementById('cedulaPropietario').value = '';
+            // Limpiar solo los selectores (mantener info del propietario para asignar más bonificaciones)
             document.getElementById('tipoBonificacion').value = '';
             document.getElementById('puestoPeaje').value = '';
+            
+            // Recargar las bonificaciones del propietario
+            const params = `cedula=${encodeURIComponent(cedula)}`;
+            submit('/bonificaciones/obtenerBonificacionesPorCedula?' + params);
         }
 
         function mostrarMensaje(texto, tipo) {

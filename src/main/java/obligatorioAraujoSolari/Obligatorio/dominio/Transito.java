@@ -20,6 +20,9 @@ public class Transito {
     @Getter
     @Setter
     private LocalDateTime fechaHora;
+    @Getter
+    @Setter
+    private Double montoPagado; // Guardar el monto pagado al momento del tránsito
     
     public Transito(Vehiculo vehiculo, PuestoPeaje puestoPeaje, Tarifa tarifa,
             Bonificacion bonificacion) {
@@ -28,6 +31,8 @@ public class Transito {
         this.tarifa = tarifa;
         this.bonificacion = bonificacion;
         this.fechaHora = LocalDateTime.now();
+        // NO calcular montoPagado aquí, se calculará después de registrar el tránsito
+        this.montoPagado = null;
     }
 
     public Transito() {}

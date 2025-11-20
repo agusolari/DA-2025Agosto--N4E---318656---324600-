@@ -21,6 +21,11 @@
 
     <script>
         function cerrarSesion() {
+            // Limpiar todo el localStorage relacionado con propietarios
+            localStorage.removeItem('propietario_bonificaciones');
+            localStorage.removeItem('bonificaciones_propietario');
+            localStorage.removeItem('propietario_cambio_estado');
+            
             submit('/acceso/logout');
         }
 

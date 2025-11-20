@@ -32,7 +32,10 @@
                 </div>
 
                 <div id="infoPropietario" style="display: none; background: #d6eaf8; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #3498db;">
-                    <h4 style="margin: 0 0 10px 0;">Propietario</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0 0 10px 0;">Propietario</h4>
+                        <button onclick="limpiarBusqueda()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Limpiar</button>
+                    </div>
                     <p style="margin: 5px 0;"><strong>Nombre:</strong> <span id="nombrePropietario"></span></p>
                     <p style="margin: 5px 0;"><strong>Estado actual:</strong> <span id="estadoActualPropietario"></span></p>
                 </div>
@@ -60,6 +63,8 @@
         
         function primerSubmitFinalizado() {
             cargarEstados();
+            // Restaurar datos del localStorage si existen
+            restaurarDatosLocalStorage();
         }
 
         function cargarEstados() {
@@ -99,11 +104,47 @@
             selectEstado.value = data.estadoNombre;
             
             document.getElementById('infoPropietario').style.display = 'block';
+            
+            // Guardar en localStorage
+            const datosGuardar = {
+                cedula: document.getElementById('cedulaPropietario').value,
+                nombreCompleto: data.nombreCompleto,
+                estadoNombre: data.estadoNombre
+            };
+            localStorage.setItem('propietario_cambio_estado', JSON.stringify(datosGuardar));
+        }
+
+        function restaurarDatosLocalStorage() {
+            const datosGuardados = localStorage.getItem('propietario_cambio_estado');
+            
+            if (datosGuardados) {
+                try {
+                    const datos = JSON.parse(datosGuardados);
+                    
+                    // Restaurar campo de cédula
+                    document.getElementById('cedulaPropietario').value = datos.cedula || '';
+                    
+                    // Restaurar información del propietario
+                    document.getElementById('nombrePropietario').textContent = datos.nombreCompleto || '';
+                    document.getElementById('estadoActualPropietario').textContent = datos.estadoNombre || '';
+                    
+                    // Preseleccionar el estado actual en el select
+                    const selectEstado = document.getElementById('nuevoEstado');
+                    selectEstado.value = datos.estadoNombre || '';
+                    
+                    document.getElementById('infoPropietario').style.display = 'block';
+                } catch (e) {
+                    console.error('Error al restaurar datos del localStorage:', e);
+                }
+            }
         }
 
         function mostrar_propietarioNoEncontrado(mensaje) {
             mostrarMensaje(mensaje || 'No existe el propietario', 'error');
             document.getElementById('infoPropietario').style.display = 'none';
+            
+            // Limpiar localStorage cuando no se encuentra el propietario
+            localStorage.removeItem('propietario_cambio_estado');
         }
         
         window.addEventListener('DOMContentLoaded', function() {
@@ -136,6 +177,9 @@
             document.getElementById('cedulaPropietario').value = '';
             document.getElementById('nuevoEstado').value = '';
             document.getElementById('infoPropietario').style.display = 'none';
+            
+            // Limpiar localStorage al cambiar estado exitosamente
+            localStorage.removeItem('propietario_cambio_estado');
         }
 
         function mostrarMensaje(texto, tipo) {
@@ -150,7 +194,22 @@
         }
 
         function volverAlTablero() {
+            // Limpiar localStorage antes de navegar
+            localStorage.removeItem('propietario_cambio_estado');
+            
             window.location.href = '/tableroAdministrador.html';
+        }
+
+        function limpiarBusqueda() {
+            // Limpiar localStorage
+            localStorage.removeItem('propietario_cambio_estado');
+            
+            // Limpiar campos del formulario
+            document.getElementById('cedulaPropietario').value = '';
+            document.getElementById('infoPropietario').style.display = 'none';
+            document.getElementById('nombrePropietario').textContent = '';
+            document.getElementById('estadoActualPropietario').textContent = '';
+            document.getElementById('nuevoEstado').value = '';
         }
 
         function mostrar_usuarioNoAutenticado(urlDestino) {

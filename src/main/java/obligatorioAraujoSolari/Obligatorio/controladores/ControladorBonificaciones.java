@@ -34,17 +34,6 @@ public class ControladorBonificaciones {
         return Respuesta.lista(new Respuesta("vistaBonificaciones", "asignarBonificaciones.html"));
     }
 
-    @PostMapping("/obtenerBonificaciones")
-    public List<Respuesta> obtenerBonificaciones(@SessionAttribute(name = "usuarioLogueado", required=false) Administrador usuario) throws PeajeException {
-        if (usuario == null) {
-            throw new PeajeException("Usuario no autenticado");
-        }
-        
-        List<BonificacionDto> bonificaciones = new ArrayList<>();
-        return Respuesta.lista(new Respuesta("bonificacionesActivas", bonificaciones));
-    }
-    
-
     @PostMapping("/asignarBonificacion")
     public List<Respuesta> asignarBonificacion(
             @SessionAttribute(name = "usuarioLogueado", required=false) Administrador usuario,

@@ -32,7 +32,10 @@
                 </div>
 
                 <div id="infoPropietario" style="display: none; background: #d6eaf8; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #3498db;">
-                    <h4 style="margin: 0 0 10px 0;">Propietario</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0 0 10px 0;">Propietario</h4>
+                        <button onclick="limpiarBusqueda()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Limpiar</button>
+                    </div>
                     <p style="margin: 5px 0;"><strong>Nombre:</strong> <span id="nombrePropietario"></span></p>
                     <p style="margin: 5px 0;"><strong>Estado:</strong> <span id="estadoPropietario"></span></p>
                     <h4 style="margin: 15px 0 10px 0;">Bonificaciones asignadas</h4>
@@ -79,6 +82,8 @@
         function primerSubmitFinalizado() {
             cargarPuestos();
             cargarBonificaciones();
+            // Restaurar datos del localStorage si existen
+            restaurarDatosLocalStorage();
         }
 
         function mostrar_vistaBonificaciones(vista) {
@@ -129,6 +134,14 @@
             document.getElementById('estadoPropietario').textContent = data.estadoNombre;
             
             document.getElementById('infoPropietario').style.display = 'block';
+            
+            // Guardar en localStorage
+            const datosGuardar = {
+                cedula: document.getElementById('cedulaPropietario').value,
+                nombreCompleto: data.nombreCompleto,
+                estadoNombre: data.estadoNombre
+            };
+            localStorage.setItem('propietario_bonificaciones', JSON.stringify(datosGuardar));
         }
 
         function mostrar_bonificaciones(bonificaciones) {
@@ -143,11 +156,54 @@
             } else {
                 divBonificaciones.innerHTML = '<p style="margin: 5px 0; font-style: italic;">Sin bonificaciones asignadas</p>';
             }
+            
+            // Guardar bonificaciones en localStorage
+            localStorage.setItem('bonificaciones_propietario', JSON.stringify(bonificaciones || []));
+        }
+
+        function restaurarDatosLocalStorage() {
+            const datosGuardados = localStorage.getItem('propietario_bonificaciones');
+            const bonificacionesGuardadas = localStorage.getItem('bonificaciones_propietario');
+            
+            if (datosGuardados) {
+                try {
+                    const datos = JSON.parse(datosGuardados);
+                    
+                    // Restaurar campo de cédula
+                    document.getElementById('cedulaPropietario').value = datos.cedula || '';
+                    
+                    // Restaurar información del propietario
+                    document.getElementById('nombrePropietario').textContent = datos.nombreCompleto || '';
+                    document.getElementById('estadoPropietario').textContent = datos.estadoNombre || '';
+                    document.getElementById('infoPropietario').style.display = 'block';
+                    
+                    // Restaurar bonificaciones si existen
+                    if (bonificacionesGuardadas) {
+                        const bonificaciones = JSON.parse(bonificacionesGuardadas);
+                        const divBonificaciones = document.getElementById('bonificacionesPropietario');
+                        
+                        if (bonificaciones && bonificaciones.length > 0) {
+                            let html = '<ul style="margin: 5px 0; padding-left: 20px;">';
+                            bonificaciones.forEach(b => {
+                                html += `<li>${b.nombre} - ${b.puestoPeaje}</li>`;
+                            });
+                            html += '</ul>';
+                            divBonificaciones.innerHTML = html;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error al restaurar datos del localStorage:', e);
+                }
+            }
         }
 
         function mostrar_propietarioNoEncontrado(mensaje) {
             mostrarMensaje(mensaje || 'No existe el propietario', 'error');
             document.getElementById('infoPropietario').style.display = 'none';
+            
+            // Limpiar localStorage cuando no se encuentra el propietario
+            localStorage.removeItem('propietario_bonificaciones');
+            localStorage.removeItem('bonificaciones_propietario');
         }
 
         // Array para almacenar bonificaciones asignadas en esta sesión
@@ -249,7 +305,24 @@
         }
 
         function volverAlTablero() {
+            // Limpiar localStorage antes de navegar
+            localStorage.removeItem('propietario_bonificaciones');
+            localStorage.removeItem('bonificaciones_propietario');
+            
             window.location.href = '/tableroAdministrador.html';
+        }
+
+        function limpiarBusqueda() {
+            // Limpiar localStorage
+            localStorage.removeItem('propietario_bonificaciones');
+            localStorage.removeItem('bonificaciones_propietario');
+            
+            // Limpiar campos del formulario
+            document.getElementById('cedulaPropietario').value = '';
+            document.getElementById('infoPropietario').style.display = 'none';
+            document.getElementById('nombrePropietario').textContent = '';
+            document.getElementById('estadoPropietario').textContent = '';
+            document.getElementById('bonificacionesPropietario').innerHTML = '';
         }
 
         function mostrar_usuarioNoAutenticado(urlDestino) {

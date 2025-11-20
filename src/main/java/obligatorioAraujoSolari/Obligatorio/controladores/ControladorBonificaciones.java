@@ -43,6 +43,7 @@ public class ControladorBonificaciones {
         List<BonificacionDto> bonificaciones = new ArrayList<>();
         return Respuesta.lista(new Respuesta("bonificacionesActivas", bonificaciones));
     }
+    
 
     @PostMapping("/asignarBonificacion")
     public List<Respuesta> asignarBonificacion(
@@ -103,8 +104,9 @@ public class ControladorBonificaciones {
             .collect(Collectors.toList());
         return Respuesta.lista(new Respuesta("bonificaciones", bonificacionesDto));
     }
+    
 
-     private Bonificacion crearBonificacionPorTipo(String tipo, Propietario propietario, PuestoPeaje puesto) {
+    private Bonificacion crearBonificacionPorTipo(String tipo, Propietario propietario, PuestoPeaje puesto) {
         switch (tipo) {
             case "Trabajadores":
                 return new BonificacionTrabajadores(propietario, puesto);

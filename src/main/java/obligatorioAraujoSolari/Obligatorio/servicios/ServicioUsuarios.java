@@ -46,6 +46,14 @@ public class ServicioUsuarios {
 
     public Sesion loginUsuarioAdministrador(String cedula, String contrasenia) throws PeajeException {
         Administrador usuario = (Administrador) login(cedula, contrasenia, administradores, "Usuario administrador y/o contraseña incorrectos");
+        
+        // Verificar si el administrador ya tiene una sesión activa
+        for (Sesion sesionActiva : sesionesActivas) {
+            if (sesionActiva.getUsuario() instanceof Administrador && 
+                sesionActiva.getUsuario().getCedula().equals(cedula)) {
+                throw new PeajeException("El administrador ya tiene una sesión activa.");
+            }
+        }
         Sesion sesion = new Sesion(usuario);
         sesion.setFechaInicio(new Date());
         sesionesActivas.add(sesion);

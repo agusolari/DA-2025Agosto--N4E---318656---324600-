@@ -18,12 +18,14 @@ Historial de tránsitos
 Bonificaciones asignadas
 Notificaciones del sistema
 Eliminación de notificaciones
+
 🛠️ Aplicación para Administradores
 Login de administrador
 Emulación de tránsitos
 Asignación de bonificaciones a propietarios
 Cambio de estado de propietarios
 Generación automática de notificaciones
+
 🌐 Interfaz Web
 SPA (Single Page Application) sin recarga de página
 Persistencia de estado ante refresh
@@ -36,6 +38,7 @@ HTML
 CSS
 JavaScript
 Arquitectura MVC
+
 🧠 Conceptos y patrones aplicados
 Programación Orientada a Objetos (POO)
 Herencia
@@ -51,6 +54,7 @@ Separación de responsabilidades
 Otros:
 Manejo de excepciones
 División en capas (Modelo - Vista - Controlador)
+
 📊 Modelo del sistema
 
 El sistema contempla:
